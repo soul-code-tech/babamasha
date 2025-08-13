@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Познакомимся - Бабушкины истории</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Caveat', cursive;
+      background: #0a0a1a url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230a0a1a"/><path d="M0,50 Q25,20 50,50 T100,50" fill="none" stroke="%239c27b0" stroke-width="0.5" opacity="0.3"/><path d="M0,70 Q25,40 50,70 T100,70" fill="none" stroke="%239c27b0" stroke-width="0.5" opacity="0.3"/></svg>') repeat;
+      color: #e0d4f7;
+      text-align: center;
+      min-height: 100vh;
+      padding: 15px;
+      position: relative;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(30, 15, 0, 0.85);
+      z-index: -1;
+    }
+
+    /* Эффект мерцающих звезд в фоне */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    .page {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      max-width: 100%;
+      margin: 15px auto;
+      padding: 20px 15px;
+      background: rgba(40, 15, 70, 0.85);
+      border: 1px solid #9c27b0;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(156, 39, 176, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #9c27b0, transparent);
+    }
+
+    .container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #9c27b0, transparent);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: #e1bee7;
+      font-size: 1.9em;
+      text-shadow: 0 0 10px #9c27b0, 0 0 15px rgba(156, 39, 176, 0.6);
+      margin-bottom: 15px;
+      position: relative;
+      letter-spacing: 1px;
+    }
+
+    h1::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #9c27b0, transparent);
+      margin: 10px auto;
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      color: #f3e5f5;
+      margin-bottom: 20px;
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    .submenu {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+      overflow-x: auto;
+      padding-bottom: 5px;
+      scrollbar-width: none;
+    }
+
+    .submenu::-webkit-scrollbar {
+      display: none;
+    }
+
+    .submenu-item {
+      background: rgba(50, 20, 80, 0.6);
+      border: 2px solid #9c27b0;
+      border-radius: 18px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.1em;
+      min-width: 120px;
+      white-space: nowrap;
+    }
+
+    .submenu-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 15px rgba(156, 39, 176, 0.4);
+      background: rgba(60, 30, 90, 0.8);
+    }
+
+    .submenu-item.active {
+      background: rgba(60, 30, 90, 0.9);
+      border-color: #e1bee7;
+      box-shadow: 0 0 20px rgba(225, 190, 231, 0.5);
+      font-weight: bold;
+    }
+
+    .section-content {
+      display: none;
+    }
+
+    .profile-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .avatar-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin-bottom: 15px;
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #9c27b0;
+      box-shadow: 0 0 12px rgba(156, 39, 176, 0.5);
+    }
+
+    .avatar-upload {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 30px;
+      height: 30px;
+      background: #9c27b0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .avatar-upload:hover {
+      background: #7b1fa2;
+      transform: scale(1.05);
+    }
+
+    .input-group {
+      width: 100%;
+      max-width: 100%;
+      margin: 12px 0;
+    }
+
+    .input-label {
+      display: block;
+      text-align: left;
+      margin-bottom: 6px;
+      color: #e1bee7;
+      font-weight: bold;
+      font-size: 1.05em;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      background: rgba(50, 20, 80, 0.5);
+      border: 1px solid #9c27b0;
+      border-radius: 8px;
+      color: #f3e5f5;
+      font-family: 'Caveat', cursive;
+      font-size: 1.05em;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: #e1bee7;
+      box-shadow: 0 0 8px rgba(225, 190, 231, 0.3);
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      margin: 12px 0;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      min-width: 80px;
+    }
+
+    .radio-input {
+      display: none;
+    }
+
+    .radio-label {
+      background: rgba(50, 20, 80, 0.6);
+      border: 1px solid #9c27b0;
+      border-radius: 18px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      width: 100%;
+      text-align: center;
+      font-size: 0.95em;
+    }
+
+    .radio-input:checked + .radio-label {
+      background: #9c27b0;
+      border-color: #e1bee7;
+      box-shadow: 0 0 8px rgba(156, 39, 176, 0.4);
+    }
+
+    .question-container {
+      background: rgba(30, 10, 60, 0.7);
+      border: 1px solid #9c27b0;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      min-height: 250px;
+      box-shadow: inset 0 0 12px rgba(156, 39, 176, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .question-title {
+      font-family: 'Playfair Display', serif;
+      color: #e1bee7;
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      text-shadow: 0 0 8px rgba(225, 190, 231, 0.4);
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .answer-btn {
+      background: rgba(50, 20, 80, 0.6);
+      color: #f3e5f5;
+      border: 1px solid #9c27b0;
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 1.05em;
+      font-family: 'Caveat', cursive;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: left;
+    }
+
+    .answer-btn:hover {
+      background: rgba(60, 30, 90, 0.7);
+      transform: translateY(-2px);
+      box-shadow: 0 0 8px rgba(156, 39, 176, 0.4);
+    }
+
+    .answer-btn.selected {
+      background: #9c27b0;
+      border-color: #e1bee7;
+      box-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
+    }
+
+    .results-container {
+      background: rgba(30, 10, 60, 0.7);
+      border: 1px solid #9c27b0;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      min-height: 300px;
+      box-shadow: inset 0 0 12px rgba(156, 39, 176, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .compatibility-score {
+      font-family: 'Playfair Display', serif;
+      color: #e1bee7;
+      font-size: 2.8em;
+      margin: 15px 0;
+      text-shadow: 0 0 12px rgba(156, 39, 176, 0.6);
+    }
+
+    .compatibility-desc {
+      color: #f3e5f5;
+      font-size: 1.15em;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .match-notification {
+      background: rgba(50, 20, 80, 0.7);
+      border: 1px solid #9c27b0;
+      border-radius: 15px;
+      padding: 15px;
+      margin: 15px 0;
+      text-align: center;
+    }
+
+    .match-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 10px;
+      border: 2px solid #9c27b0;
+    }
+
+    .match-name {
+      font-weight: bold;
+      color: #e1bee7;
+      font-size: 1.2em;
+      margin-bottom: 5px;
+    }
+
+    .match-compatibility {
+      color: #f3e5f5;
+      font-size: 0.95em;
+      margin-bottom: 10px;
+    }
+
+    .match-city {
+      background: rgba(156, 39, 176, 0.2);
+      border: 1px solid #9c27b0;
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: 0.85em;
+      margin-top: 5px;
+      display: inline-block;
+    }
+
+    .match-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn-match {
+      flex: 1;
+      padding: 10px;
+      border-radius: 12px;
+      border: none;
+      font-family: 'Caveat', cursive;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-accept {
+      background: #4caf50;
+      color: white;
+    }
+
+    .btn-decline {
+      background: #f44336;
+      color: white;
+    }
+
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 450px;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: rgba(50, 20, 80, 0.5);
+      border-radius: 12px 12px 0 0;
+      border-bottom: 1px solid #9c27b0;
+    }
+
+    .chat-title {
+      font-weight: bold;
+      color: #e1bee7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1em;
+    }
+
+    .chat-city-tag {
+      background: rgba(156, 39, 176, 0.3);
+      border: 1px solid #9c27b0;
+      border-radius: 8px;
+      padding: 2px 6px;
+      font-size: 0.75em;
+    }
+
+    .chat-members {
+      display: flex;
+      gap: 4px;
+    }
+
+    .member-avatar {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #9c27b0;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      background: rgba(30, 10, 60, 0.5);
+      border-left: 1px solid #9c27b0;
+      border-right: 1px solid #9c27b0;
+    }
+
+    .message {
+      margin-bottom: 12px;
+      max-width: 85%;
+    }
+
+    .message.self {
+      margin-left: auto;
+    }
+
+    .message-content {
+      background: rgba(60, 30, 90, 0.8);
+      color: #f3e5f5;
+      padding: 8px 12px;
+      border-radius: 12px 12px 0 12px;
+      position: relative;
+      font-size: 1.05em;
+    }
+
+    .message.self .message-content {
+      background: #9c27b0;
+      border-radius: 12px 12px 12px 0;
+    }
+
+    .message-time {
+      font-size: 0.65em;
+      color: #b0bec5;
+      text-align: right;
+      margin-top: 3px;
+    }
+
+    .message-image {
+      max-width: 100%;
+      max-height: 150px;
+      border-radius: 8px;
+      margin-top: 4px;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(50, 20, 80, 0.5);
+      border-radius: 0 0 12px 12px;
+      border-top: 1px solid #9c27b0;
+    }
+
+    .chat-input-field {
+      flex: 1;
+      padding: 10px;
+      background: rgba(30, 10, 60, 0.7);
+      border: 1px solid #9c27b0;
+      border-radius: 8px;
+      color: #f3e5f5;
+      font-family: 'Caveat', cursive;
+    }
+
+    .chat-input-field:focus {
+      outline: none;
+      border-color: #e1bee7;
+    }
+
+    .chat-input-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-btn {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: rgba(50, 20, 80, 0.6);
+      border: 1px solid #9c27b0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .chat-btn:hover {
+      background: #9c27b0;
+      transform: scale(1.05);
+    }
+
+    .friends-list {
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .friend-item {
+      background: rgba(50, 20, 80, 0.5);
+      border: 1px solid #9c27b0;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .friend-item:hover {
+      background: rgba(60, 30, 90, 0.7);
+      transform: translateY(-2px);
+    }
+
+    .friend-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #9c27b0;
+    }
+
+    .friend-info {
+      flex: 1;
+      text-align: left;
+    }
+
+    .friend-name {
+      font-weight: bold;
+      color: #e1bee7;
+      margin-bottom: 3px;
+    }
+
+    .friend-status {
+      font-size: 0.85em;
+      color: #b0bec5;
+    }
+
+    .friend-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-chat {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(156, 39, 176, 0.3);
+      border: 1px solid #9c27b0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: rgba(50, 20, 80, 0.5);
+      border-radius: 3px;
+      margin: 15px 0;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background: #9c27b0;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .warning {
+      background: rgba(156, 39, 176, 0.2);
+      border: 1px solid #9c27b0;
+      border-radius: 8px;
+      padding: 8px;
+      margin: 8px 0;
+      color: #f3e5f5;
+      font-size: 0.85em;
+      text-align: left;
+    }
+
+    .baba-message {
+      background: rgba(50, 20, 80, 0.5);
+      border: 1px solid #9c27b0;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 10px 0;
+      text-align: center;
+      font-style: italic;
+      color: #d1c4e9;
+      font-size: 0.95em;
+    }
+
+    .nav-buttons {
+      margin: 20px auto 10px;
+      display: flex;
+      justify-content: space-between;
+      max-width: 100%;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-back, .btn-home, .btn-next, .btn-prev {
+      display: inline-block;
+      padding: 10px 15px;
+      background: rgba(225, 190, 231, 0.25);
+      color: #e1bee7;
+      text-decoration: none;
+      border: 1px solid #e1bee7;
+      border-radius: 10px;
+      font-size: 1.05em;
+      font-family: 'Caveat', cursive;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(225, 190, 231, 0.3);
+      min-width: 120px;
+      flex: 1;
+    }
+
+    .btn-back:hover, .btn-home:hover, .btn-next:hover, .btn-prev:hover {
+      background: rgba(225, 190, 231, 0.4);
+      transform: scale(1.03);
+      box-shadow: 0 0 10px rgba(225, 190, 231, 0.4);
+    }
+
+    .spiral {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 40px;
+      height: 40px;
+      background: 
+        radial-gradient(circle at 20px 20px, transparent 1.5px, #9c27b0 2px, transparent 2.5px),
+        linear-gradient(45deg, transparent 20px, #9c27b0 21px, #9c27b0 22px, transparent 23px),
+        linear-gradient(135deg, transparent 20px, #9c27b0 21px, #9c27b0 22px, transparent 23px);
+      opacity: 0.2;
+    }
+
+    .seal {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 30px;
+      height: 30px;
+      background: radial-gradient(circle, #9c27b0, #4a148c);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 0.6em;
+      opacity: 0.6;
+    }
+
+    .page-transition {
+      animation: pageSlide 0.4s ease;
+    }
+
+    @keyframes pageSlide {
+      from { opacity: 0; transform: translateX(15px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .story-animation {
+      animation: storyAppear 0.6s ease;
+    }
+
+    @keyframes storyAppear {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 15px;
+    }
+
+    .spinner {
+      border: 3px solid rgba(156, 39, 176, 0.3);
+      border-radius: 50%;
+      border-top: 3px solid #9c27b0;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .empty-message {
+      background: rgba(50, 20, 80, 0.5);
+      border: 1px solid #9c27b0;
+      border-radius: 12px;
+      padding: 15px;
+      margin: 15px 0;
+      color: #e1bee7;
+      font-size: 1.1em;
+    }
+
+    .baba-rules {
+      background: rgba(50, 20, 80, 0.4);
+      border: 1px solid #9c27b0;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 0.9em;
+      color: #d1c4e9;
+      text-align: left;
+    }
+
+    .baba-rules li {
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+
+    .baba-humor {
+      font-style: italic;
+      color: #ff9800;
+      margin-top: 8px;
+      font-size: 0.95em;
+    }
+
+    /* Mobile-specific styles */
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px 10px;
+        border-radius: 16px;
+      }
+      
+      h1 {
+        font-size: 1.7em;
+      }
+      
+      .input-field, .answer-btn, .btn-match, .chat-input-field {
+        font-size: 1em;
+      }
+      
+      .question-title {
+        font-size: 1.35em;
+      }
+      
+      .compatibility-score {
+        font-size: 2.3em;
+      }
+      
+      .chat-container {
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  
+  <div class="page">
+    <!-- Регистрация -->
+    <div id="registration" class="container">
+      <h1>🤝 Познакомимся</h1>
+      <p class="subtitle">Мистические знакомства от бабы Маши</p>
+      
+      <div class="profile-section">
+        <div class="avatar-container">
+          <img src="https://placehold.co/120x120/4a148c/9c27b0?text=Вы" alt="Ваш аватар" class="avatar" id="reg-avatar">
+          <div class="avatar-upload" onclick="document.getElementById('reg-avatar-input').click()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16">
+              <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+              <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+            </svg>
+          </div>
+          <input type="file" id="reg-avatar-input" accept="image/*" style="display: none;" onchange="updateRegAvatar(event)">
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">Ваш никнейм</label>
+          <input type="text" class="input-field" id="reg-username" placeholder="Как вас зовут, дорогой?" value="Анна">
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">Ваш город</label>
+          <input type="text" class="input-field" id="reg-city" placeholder="Ваш город проживания" value="Москва">
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">Ваш пол</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" id="reg-gender-female" name="reg-gender" class="radio-input" checked>
+              <label for="reg-gender-female" class="radio-label">♀ Девушка</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="reg-gender-male" name="reg-gender" class="radio-input">
+              <label for="reg-gender-male" class="radio-label">♂ Парень</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="warning">
+          <strong>Внимание!</strong> Регистрируясь, вы соглашаетесь с правилами общения в нашем сообществе.
+        </div>
+        
+        <button class="btn-next" onclick="registerUser()">Зарегистрироваться</button>
+      </div>
+    </div>
+    
+    <!-- Основной интерфейс -->
+    <div id="main-app" class="container" style="display: none;">
+      <h1>Мистические знакомства</h1>
+      <p class="subtitle">Найдите свою духовную пару с помощью бабы Маши</p>
+      
+      <div class="submenu">
+        <div class="submenu-item active" onclick="showSection('friends')">Мои друзья</div>
+        <div class="submenu-item" onclick="showSection('compatibility-test')">Тест на совместимость</div>
+        <div class="submenu-item" onclick="showSection('chat')">Чат</div>
+      </div>
+      
+      <!-- Секция "Мои друзья" -->
+      <div id="friends" class="section-content active">
+        <div class="empty-message" id="friends-empty">
+          <p>У вас пока нет друзей.</p>
+          <p>Пройдите тест на совместимость, чтобы найти подходящих собеседников!</p>
+        </div>
+        
+        <div class="friends-list" id="friends-list" style="display: none;">
+          <div class="friend-item" onclick="openChat(1)">
+            <img src="https://placehold.co/50x50/4a148c/9c27b0?text=А" alt="Алексей" class="friend-avatar">
+            <div class="friend-info">
+              <div class="friend-name">Алексей</div>
+              <div class="friend-status">онлайн • Москва</div>
+            </div>
+            <div class="friend-actions">
+              <div class="btn-chat" title="Написать">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e1bee7" viewBox="0 0 16 16">
+                  <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.19a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.001.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.156-.257L5.509 9.02l.932-.562 1.222 1.834a.5.5 0 0 0 .755.157l5.11-6.813-1.897 1.897-.896.896 2.012 1.263-.896.896-1.263-2.012-.375.375.375.375-1.274 1.274Z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          <div class="friend-item" onclick="openChat(2)">
+            <img src="https://placehold.co/50x50/4a148c/9c27b0?text=С" alt="София" class="friend-avatar">
+            <div class="friend-info">
+              <div class="friend-name">София</div>
+              <div class="friend-status">был(а) 15 мин назад • Санкт-Петербург</div>
+            </div>
+            <div class="friend-actions">
+              <div class="btn-chat" title="Написать">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e1bee7" viewBox="0 0 16 16">
+                  <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.19a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.001.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.156-.257L5.509 9.02l.932-.562 1.222 1.834a.5.5 0 0 0 .755.157l5.11-6.813-1.897 1.897-.896.896 2.012 1.263-.896.896-1.263-2.012-.375.375.375.375-1.274 1.274Z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Секция "Тест на совместимость" -->
+      <div id="compatibility-test" class="section-content">
+        <!-- Тест на совместимость -->
+        <div id="test-questions" style="display: block;">
+          <div class="progress-bar">
+            <div class="progress" id="test-progress" style="width: 0%;"></div>
+          </div>
+          
+          <div class="question-container">
+            <h2 class="question-title" id="question-title">Какой ваш любимый способ провести вечер?</h2>
+            
+            <div class="answers" id="answers-container">
+              <button class="answer-btn" onclick="selectAnswer(this, 1)">Уединиться с книгой или фильмом</button>
+              <button class="answer-btn" onclick="selectAnswer(this, 2)">Встретиться с друзьями</button>
+              <button class="answer-btn" onclick="selectAnswer(this, 3)">Заняться творчеством или хобби</button>
+              <button class="answer-btn" onclick="selectAnswer(this, 4)">Прогуляться под луной</button>
+            </div>
+          </div>
+          
+          <button class="btn-next" id="next-question-btn" onclick="nextQuestion()" style="display: none;">Следующий вопрос →</button>
+        </div>
+        
+        <!-- Результаты теста -->
+        <div id="test-results" style="display: none;" class="results-container">
+          <h2 class="story-title">Ваши результаты совместимости</h2>
+          
+          <div class="compatibility-score" id="compatibility-score">85%</div>
+          
+          <p class="compatibility-desc" id="compatibility-desc">
+            Баба Маша заглянула в кристальную сферу и увидела, что у вас прекрасная энергетическая совместимость с несколькими людьми в нашем сообществе! 
+            Вы цените искренность и душевные разговоры, что редкость в наше время. Продолжайте быть собой!
+          </p>
+          
+          <div class="baba-message">
+            "Милочки, внучата! Помните: истина в душе, а не в глазах. Не спешите с выводами, дайте себе и другому человеку шанс узнать друг друга получше!"
+          </div>
+          
+          <div class="baba-humor">
+            "А помните, как я вам говорила: 'Не суди по обложке, может, там внутри - счастье!'"
+          </div>
+        </div>
+        
+        <!-- Уведомление о совпадении -->
+        <div id="match-notification" style="display: none;" class="match-notification">
+          <img src="https://placehold.co/80x80/4a148c/9c27b0?text=А" alt="Алексей" class="match-avatar">
+          <div class="match-name">Алексей</div>
+          <div class="match-compatibility">82% совместимость</div>
+          <div class="match-city">Москва</div>
+          
+          <p style="color: #f3e5f5; margin: 10px 0;">Баба Маша говорит, что вы подходите друг другу!</p>
+          
+          <p style="color: #e1bee7; font-weight: bold; margin-bottom: 15px;">
+            Алексей из Москвы хочет с вами пообщаться. Не желаете ответить?
+          </p>
+          
+          <div class="match-actions">
+            <button class="btn-match btn-accept" onclick="acceptMatch()">Почататься</button>
+            <button class="btn-match btn-decline" onclick="declineMatch()">Потом</button>
+          </div>
+          
+          <div class="baba-rules">
+            <p style="margin-bottom: 8px; color: #e1bee7;">Правила общения от бабы Маши:</p>
+            <ul>
+              <li>Общайтесь уважительно, как с родными</li>
+              <li>Не спрашивайте личные данные сразу</li>
+              <li>Цените время друг друга</li>
+              <li>Не обижайте словом - слова не воробей</li>
+            </ul>
+            <div class="baba-humor" style="margin-top: 8px;">
+              "А помните, как я вам говорила: 'Не суди по обложке, может, там внутри - счастье!'"
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Секция "Чат" -->
+      <div id="chat" class="section-content">
+        <div class="empty-message" id="chat-empty">
+          <p>У вас пока нет активных чатов.</p>
+          <p>Найдите друзей через тест на совместимость!</p>
+        </div>
+        
+        <div id="chat-content" style="display: none;">
+          <div class="baba-message" id="baba-welcome">
+            Дорогие мои внучата! Помните: общение - это как чайник - кипит, когда в нем тепло и уважение. 
+            Не спешите с выводами, дайте друг другу время узнать сердца. И помните: "Не суди по обложке, может, там внутри - счастье!"
+          </div>
+          
+          <div class="chat-container" id="active-chat" style="display: none;">
+            <div class="chat-header">
+              <div class="chat-title" id="chat-title">
+                Алексей
+                <span class="chat-city-tag">Москва</span>
+              </div>
+              <div class="chat-members">
+                <img src="https://placehold.co/25x25/4a148c/9c27b0?text=В" alt="Ваш аватар" class="member-avatar">
+                <img src="https://placehold.co/25x25/4a148c/9c27b0?text=А" alt="Аватар собеседника" class="member-avatar">
+              </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+              <div class="message">
+                <div class="message-content">
+                  Привет! Как твои дела? Баба Маша сегодня подсказала мне, что ты ищешь собеседника для душевных разговоров.
+                </div>
+                <div class="message-time">10:25</div>
+              </div>
+              
+              <div class="message self">
+                <div class="message-content">
+                  Привет! Да, я как раз хотел(а) пообщаться. Сегодня баба Маша посоветовала мне найти нового друга.
+                </div>
+                <div class="message-time">10:27</div>
+              </div>
+              
+              <div class="message">
+                <div class="message-content">
+                  Отлично! Я тоже верю в мудрость бабы Маши. Она мне сегодня сказала, что я найду человека, с которым смогу говорить обо всём.
+                </div>
+                <div class="message-time">10:28</div>
+              </div>
+            </div>
+            
+            <div class="chat-input">
+              <input type="text" class="chat-input-field" id="message-input" placeholder="Напишите сообщение...">
+              <div class="chat-input-actions">
+                <div class="chat-btn" onclick="document.getElementById('photo-input').click()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e1bee7" viewBox="0 0 16 16">
+                    <path d="M.165 8.662a.5.5 0 0 0 .589.372l6.047-.807 1.968 1.968-.807 6.047a.5.5 0 0 0 .372.589l.5.166a.5.5 0 0 0 .5-.166l6.047-8.063a.5.5 0 0 0 0-.628L8 2.223a.5.5 0 0 0-.5.166L.663 8.165a.5.5 0 0 0-.5.166l-.166.5Z"/>
+                  </svg>
+                </div>
+                <input type="file" id="photo-input" accept="image/*" style="display: none;" onchange="sendPhoto(event)">
+                <div class="chat-btn" onclick="sendMessage()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e1bee7" viewBox="0 0 16 16">
+                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.19a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.001.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.156-.257L5.509 9.02l.932-.562 1.222 1.834a.5.5 0 0 0 .755.157l5.11-6.813-1.897 1.897-.896.896 2.012 1.263-.896.896-1.263-2.012-.375.375.375.375-1.274 1.274Z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <a href="#" class="btn-back" onclick="goBack()" style="display: none;">⬅️ Назад</a>
+        <a href="index.html" class="btn-home">🏠 Главное меню</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Создаем мерцающие звезды
+    function createStars() {
+      const starsContainer = document.getElementById('stars');
+      const starCount = 80;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // Случайные параметры для звезд
+        const size = Math.random() * 2.5;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const delay = Math.random() * 4;
+        const duration = 2 + Math.random() * 4;
+        
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${posX}%`;
+        star.style.top = `${posY}%`;
+        star.style.animationDelay = `${delay}s`;
+        star.style.animationDuration = `${duration}s`;
+        
+        starsContainer.appendChild(star);
+      }
+    }
+    
+    // Данные пользователя
+    let userData = {
+      id: null,
+      avatar: 'https://placehold.co/120x120/4a148c/9c27b0?text=Вы',
+      username: '',
+      city: '',
+      gender: '',
+      answers: [],
+      friends: [],
+      currentChat: null
+    };
+    
+    // Глобальные данные о пользователях для имитации
+    const allUsers = [
+      {
+        id: 1,
+        avatar: "https://placehold.co/80x80/4a148c/9c27b0?text=А",
+        name: "Алексей",
+        city: "Москва",
+        gender: "male",
+        compatibility: 82,
+        isLocal: true,
+        status: "online"
+      },
+      {
+        id: 2,
+        avatar: "https://placehold.co/80x80/4a148c/9c27b0?text=С",
+        name: "София",
+        city: "Санкт-Петербург",
+        gender: "female",
+        compatibility: 76,
+        isLocal: false,
+        status: "offline"
+      },
+      {
+        id: 3,
+        avatar: "https://placehold.co/80x80/4a148c/9c27b0?text=М",
+        name: "Михаил",
+        city: "Москва",
+        gender: "male",
+        compatibility: 78,
+        isLocal: true,
+        status: "online"
+      },
+      {
+        id: 4,
+        avatar: "https://placehold.co/80x80/4a148c/9c27b0?text=К",
+        name: "Катя",
+        city: "Санкт-Петербург",
+        gender: "female",
+        compatibility: 72,
+        isLocal: false,
+        status: "offline"
+      }
+    ];
+    
+    // Данные теста
+    let compatibilityTest = {
+      currentQuestion: 0,
+      questions: [
+        {
+          text: "Какой ваш любимый способ провести вечер?",
+          answers: [
+            "Уединиться с книгой или фильмом",
+            "Встретиться с друзьями",
+            "Заняться творчеством или хобби",
+            "Прогуляться под луной"
+          ]
+        },
+        {
+          text: "Что вы цените больше всего в дружбе?",
+          answers: [
+            "Искренность и честность",
+            "Общие интересы и хобби",
+            "Возможность молчать, не чувствуя неловкости",
+            "Поддержку в трудную минуту"
+          ]
+        },
+        {
+          text: "Как вы относитесь к мистическим явлениям?",
+          answers: [
+            "Верю и сталкивался(ась) с ними",
+            "Скептически отношусь, но интересно",
+            "Полностью отрицаю их существование",
+            "Чувствую их присутствие, но не понимаю"
+          ]
+        },
+        {
+          text: "Какой астрологический знак вы считаете наиболее совместимым с вами?",
+          answers: [
+            "Овен",
+            "Телец",
+            "Близнецы",
+            "Рак"
+          ]
+        },
+        {
+          text: "Что для вас значит 'духовная связь'?",
+          answers: [
+            "Глубокое взаимопонимание без слов",
+            "Общие взгляды на жизнь и ценности",
+            "Способность чувствовать эмоции друг друга",
+            "Невероятная химия и притяжение"
+          ]
+        },
+        {
+          text: "Какой мистический артефакт вы бы хотели иметь?",
+          answers: [
+            "Кристальный шар для предсказаний",
+            "Оберег для защиты от негатива",
+            "Книгу заклинаний",
+            "Карта звездного неба с секретами"
+          ]
+        },
+        {
+          text: "Как вы обычно принимаете важные решения?",
+          answers: [
+            "Слушаю интуицию и внутренний голос",
+            "Взвешиваю все за и против",
+            "Советуюсь с близкими",
+            "Бросаю жребий или гадаю"
+          ]
+        },
+        {
+          text: "Какой ваш подход к новым знакомствам?",
+          answers: [
+            "Открыт и дружелюбен ко всем",
+            "Осторожно, сначала оцениваю человека",
+            "Только с теми, кого рекомендовали",
+            "Предпочитаю, чтобы ко мне подходили"
+          ]
+        },
+        {
+          text: "Что вас привлекает в людях больше всего?",
+          answers: [
+            "Их внутренний мир и мысли",
+            "Внешняя привлекательность",
+            "Чувство юмора",
+            "Уверенность в себе"
+          ]
+        },
+        {
+          text: "Как вы представляете идеальное первое свидание?",
+          answers: [
+            "Тихий вечер с чаем и душевной беседой",
+            "Приключенческая прогулка в необычном месте",
+            "Посещение культурного мероприятия",
+            "Случайная встреча с последующим волшебством"
+          ]
+        }
+      ]
+    };
+    
+    // Текущая секция
+    let currentSection = 'friends';
+    let matchProposal = null;
+    
+    // Функция обновления аватара при регистрации
+    function updateRegAvatar(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          document.getElementById('reg-avatar').src = e.target.result;
+        }
+        
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    // Функция регистрации пользователя
+    function registerUser() {
+      // Собираем данные
+      const username = document.getElementById('reg-username').value.trim() || 'Пользователь';
+      const city = document.getElementById('reg-city').value.trim() || 'Москва';
+      const gender = document.querySelector('input[name="reg-gender"]:checked').id.split('-')[2];
+      const avatar = document.getElementById('reg-avatar').src;
+      
+      // Генерируем уникальный ID
+      const timestamp = new Date().getTime();
+      const randomPart = Math.floor(Math.random() * 1000);
+      const userId = `user_${timestamp}_${randomPart}`;
+      
+      // Сохраняем данные пользователя
+      userData = {
+        id: userId,
+        avatar: avatar,
+        username: username,
+        city: city,
+        gender: gender,
+        answers: [],
+        friends: [],
+        currentChat: null
+      };
+      
+      // Показываем основное приложение
+      document.getElementById('registration').style.display = 'none';
+      document.getElementById('main-app').style.display = 'block';
+      
+      // Имитация случайного предложения о знакомстве через 3 секунды
+      setTimeout(() => {
+        showMatchProposal();
+      }, 3000);
+    }
+    
+    // Функция показа предложения о знакомстве
+    function showMatchProposal() {
+      // Выбираем случайного пользователя из тех, кто подходит по полу
+      const targetGender = userData.gender === 'female' ? 'male' : 'female';
+      const potentialMatches = allUsers.filter(user => 
+        user.gender === targetGender && 
+        Math.random() > 0.5 // Имитация случайного выбора
+      );
+      
+      if (potentialMatches.length > 0) {
+        matchProposal = potentialMatches[0];
+        
+        // Показываем уведомление
+        document.getElementById('test-results').style.display = 'none';
+        document.getElementById('match-notification').style.display = 'block';
+        
+        // Обновляем данные в уведомлении
+        document.querySelector('#match-notification .match-avatar').src = matchProposal.avatar;
+        document.querySelector('#match-notification .match-name').textContent = matchProposal.name;
+        document.querySelector('#match-notification .match-compatibility').textContent = `${matchProposal.compatibility}% совместимость`;
+        document.querySelector('#match-notification .match-city').textContent = matchProposal.city;
+        
+        // Показываем секцию теста
+        showSection('compatibility-test');
+      }
+    }
+    
+    // Функция принятия предложения
+    function acceptMatch() {
+      // Добавляем в друзья
+      if (!userData.friends.some(f => f.id === matchProposal.id)) {
+        userData.friends.push({
+          id: matchProposal.id,
+          name: matchProposal.name,
+          avatar: matchProposal.avatar,
+          city: matchProposal.city
+        });
+        
+        // Создаем чат
+        userData.currentChat = matchProposal.id;
+        
+        // Обновляем интерфейс
+        updateFriendsList();
+        openChat(matchProposal.id);
+      }
+    }
+    
+    // Функция отклонения предложения
+    function declineMatch() {
+      document.getElementById('match-notification').style.display = 'none';
+      document.getElementById('test-results').style.display = 'block';
+    }
+    
+    // Функция для отображения секции
+    function showSection(section) {
+      // Скрываем все секции
+      document.querySelectorAll('.section-content').forEach(el => {
+        el.classList.remove('active');
+        el.style.display = 'none';
+      });
+      
+      // Показываем выбранную секцию
+      const sectionElement = document.getElementById(section);
+      sectionElement.style.display = 'block';
+      sectionElement.classList.add('active');
+      
+      // Обновляем активный пункт меню
+      document.querySelectorAll('.submenu-item').forEach(el => {
+        el.classList.remove('active');
+      });
+      event?.currentTarget?.classList.add('active');
+      
+      currentSection = section;
+      
+      // Показываем кнопку "Назад"
+      document.querySelector('.btn-back').style.display = 'inline-block';
+      
+      // Скрываем уведомление о совпадении при переходе на другие секции
+      if (section !== 'compatibility-test' && document.getElementById('match-notification').style.display === 'block') {
+        document.getElementById('match-notification').style.display = 'none';
+      }
+      
+      // Проверяем состояние друзей
+      if (section === 'friends') {
+        updateFriendsList();
+      }
+      
+      // Проверяем состояние чата
+      if (section === 'chat') {
+        checkChatStatus();
+      }
+    }
+    
+    // Функция обновления списка друзей
+    function updateFriendsList() {
+      const friendsList = document.getElementById('friends-list');
+      const friendsEmpty = document.getElementById('friends-empty');
+      
+      if (userData.friends.length === 0) {
+        friendsList.style.display = 'none';
+        friendsEmpty.style.display = 'block';
+      } else {
+        friendsList.style.display = 'block';
+        friendsEmpty.style.display = 'none';
+        
+        // Очищаем список
+        friendsList.innerHTML = '';
+        
+        // Добавляем друзей
+        userData.friends.forEach(friend => {
+          const friendElement = document.createElement('div');
+          friendElement.className = 'friend-item';
+          friendElement.onclick = function() { openChat(friend.id); };
+          
+          const status = friend.id === userData.currentChat ? 'онлайн' : 'был(а) недавно';
+          
+          friendElement.innerHTML = `
+            <img src="${friend.avatar}" alt="${friend.name}" class="friend-avatar">
+            <div class="friend-info">
+              <div class="friend-name">${friend.name}</div>
+              <div class="friend-status">${status} • ${friend.city}</div>
+            </div>
+            <div class="friend-actions">
+              <div class="btn-chat" title="Написать">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e1bee7" viewBox="0 0 16 16">
+                  <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.19a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.001.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.156-.257L5.509 9.02l.932-.562 1.222 1.834a.5.5 0 0 0 .755.157l5.11-6.813-1.897 1.897-.896.896 2.012 1.263-.896.896-1.263-2.012-.375.375.375.375-1.274 1.274Z"/>
+                </svg>
+              </div>
+            </div>
+          `;
+          
+          friendsList.appendChild(friendElement);
+        });
+      }
+    }
+    
+    // Функция проверки состояния чата
+    function checkChatStatus() {
+      const chatEmpty = document.getElementById('chat-empty');
+      const chatContent = document.getElementById('chat-content');
+      const babaWelcome = document.getElementById('baba-welcome');
+      
+      if (!userData.currentChat) {
+        chatEmpty.style.display = 'block';
+        chatContent.style.display = 'none';
+      } else {
+        chatEmpty.style.display = 'none';
+        chatContent.style.display = 'block';
+        
+        // Скрываем приветствие бабы Маши после первого сообщения
+        setTimeout(() => {
+          babaWelcome.style.display = 'none';
+        }, 5000);
+      }
+    }
+    
+    // Функция загрузки вопроса
+    function loadQuestion(index) {
+      const question = compatibilityTest.questions[index];
+      document.getElementById('question-title').textContent = question.text;
+      
+      // Очищаем предыдущие ответы
+      const answersContainer = document.getElementById('answers-container');
+      answersContainer.innerHTML = '';
+      
+      // Добавляем новые ответы
+      question.answers.forEach((answer, i) => {
+        const answerBtn = document.createElement('button');
+        answerBtn.className = 'answer-btn';
+        answerBtn.textContent = answer;
+        answerBtn.onclick = function() { selectAnswer(this, i + 1); };
+        answersContainer.appendChild(answerBtn);
+      });
+      
+      // Обновляем прогресс
+      const progress = (index / compatibilityTest.questions.length) * 100;
+      document.getElementById('test-progress').style.width = `${progress}%`;
+      
+      // Скрываем кнопку "Далее"
+      document.getElementById('next-question-btn').style.display = 'none';
+    }
+    
+    // Функция выбора ответа
+    function selectAnswer(element, answerIndex) {
+      // Удаляем выделение с других ответов
+      document.querySelectorAll('.answer-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      
+      // Выделяем выбранный ответ
+      element.classList.add('selected');
+      
+      // Сохраняем ответ
+      userData.answers[compatibilityTest.currentQuestion] = answerIndex;
+      
+      // Показываем кнопку "Далее"
+      document.getElementById('next-question-btn').style.display = 'block';
+    }
+    
+    // Функция следующего вопроса
+    function nextQuestion() {
+      compatibilityTest.currentQuestion++;
+      
+      if (compatibilityTest.currentQuestion < compatibilityTest.questions.length) {
+        // Загружаем следующий вопрос
+        loadQuestion(compatibilityTest.currentQuestion);
+      } else {
+        // Показываем результаты
+        showResults();
+      }
+    }
+    
+    // Функция отображения результатов
+    function showResults() {
+      document.getElementById('test-questions').style.display = 'none';
+      document.getElementById('test-results').style.display = 'block';
+      
+      // Вычисляем совместимость
+      const score = 70 + Math.floor(Math.random() * 25);
+      document.getElementById('compatibility-score').textContent = `${score}%`;
+      
+      // Генерируем описание
+      let desc = '';
+      if (score > 85) {
+        desc = `Баба Маша заглянула в кристальную сферу и увидела, что у вас просто идеальная энергетическая совместимость с несколькими людьми в нашем сообществе! 
+        Вы обладаете редкой способностью находить общий язык с разными людьми. Продолжайте быть собой, и удача будет сопутствовать вам!`;
+      } else if (score > 70) {
+        desc = `Баба Маша заглянула в кристальную сферу и увидела, что у вас прекрасная энергетическая совместимость с несколькими людьми в нашем сообществе! 
+        Вы цените искренность и душевные разговоры, что редкость в наше время. Продолжайте быть собой!`;
+      } else {
+        desc = `Баба Маша заглянула в кристальную сферу и увидела, что у вас хорошая энергетическая совместимость с несколькими людьми в нашем сообществе! 
+        Иногда нужно время, чтобы найти тех, с кем вы будете понимать друг друга с полуслова. Не переживайте, все в руках Вселенной!`;
+      }
+      
+      document.getElementById('compatibility-desc').textContent = desc;
+      
+      // Имитация предложения о знакомстве
+      setTimeout(() => {
+        showMatchProposal();
+      }, 2000);
+    }
+    
+    // Функция для открытия чата
+    function openChat(chatId) {
+      document.getElementById('chat-empty').style.display = 'none';
+      document.getElementById('chat-content').style.display = 'block';
+      document.getElementById('active-chat').style.display = 'block';
+      
+      // Находим информацию о собеседнике
+      const friend = userData.friends.find(f => f.id === chatId);
+      const chatUser = allUsers.find(u => u.id === chatId);
+      
+      if (friend && chatUser) {
+        // Обновляем заголовок чата
+        const chatTitle = document.getElementById('chat-title');
+        chatTitle.innerHTML = `
+          ${friend.name}
+          <span class="chat-city-tag">${chatUser.city === userData.city ? chatUser.city : chatUser.city.substring(0, 3)}</span>
+        `;
+      }
+      
+      // Устанавливаем текущий чат
+      userData.currentChat = chatId;
+      
+      // Прокручиваем к нижней части чата
+      const chatMessages = document.getElementById('chat-messages');
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Показываем секцию чата
+      showSection('chat');
+    }
+    
+    // Функция отправки сообщения
+    function sendMessage() {
+      const messageInput = document.getElementById('message-input');
+      const message = messageInput.value.trim();
+      
+      if (message) {
+        // Проверка на запрещенные элементы
+        if (message.includes('тел.') || message.includes('телефон') || 
+            message.includes('@') || message.includes('http')) {
+          alert('Внимание! В сообщении обнаружена запрещенная информация. В целях безопасности запрещено обмениваться контактами вне приложения.');
+          return;
+        }
+        
+        // Создаем элемент сообщения
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message self';
+        
+        messageElement.innerHTML = `
+          <div class="message-content">${message}</div>
+          <div class="message-time">${getCurrentTime()}</div>
+        `;
+        
+        // Добавляем в чат
+        document.getElementById('chat-messages').appendChild(messageElement);
+        
+        // Очищаем поле ввода
+        messageInput.value = '';
+        
+        // Прокручиваем к нижней части чата
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // Имитация ответа
+        if (Math.random() > 0.3) {
+          setTimeout(() => {
+            const responseElement = document.createElement('div');
+            responseElement.className = 'message';
+            
+            const responses = [
+              "Согласен(сна) с тобой полностью! Баба Маша сегодня тоже говорила об этом.",
+              "Как интересно! Расскажи больше об этом?",
+              "Я тоже так думаю. Видимо, мы действительно совместимы!",
+              "Это замечательно! А ты веришь в знаки судьбы?",
+              "Баба Маша подсказала мне сегодня, что я встречу человека с похожими взглядами. Думаю, это ты!"
+            ];
+            
+            responseElement.innerHTML = `
+              <div class="message-content">${responses[Math.floor(Math.random() * responses.length)]}</div>
+              <div class="message-time">${getCurrentTime()}</div>
+            `;
+            
+            document.getElementById('chat-messages').appendChild(responseElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }, 1500);
+        }
+      }
+    }
+    
+    // Функция отправки фото
+    function sendPhoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          // Создаем элемент сообщения с фото
+          const messageElement = document.createElement('div');
+          messageElement.className = 'message self';
+          
+          messageElement.innerHTML = `
+            <div class="message-content">
+              <img src="${e.target.result}" alt="Фото" class="message-image">
+            </div>
+            <div class="message-time">${getCurrentTime()}</div>
+          `;
+          
+          // Добавляем в чат
+          document.getElementById('chat-messages').appendChild(messageElement);
+          
+          // Очищаем поле выбора файла
+          event.target.value = '';
+          
+          // Прокручиваем к нижней части чата
+          const chatMessages = document.getElementById('chat-messages');
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    // Функция получения текущего времени
+    function getCurrentTime() {
+      const now = new Date();
+      return `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+    }
+    
+    // Функция для возврата назад
+    function goBack() {
+      if (currentSection === 'chat') {
+        showSection('friends');
+      } else if (currentSection === 'compatibility-test') {
+        if (document.getElementById('match-notification').style.display === 'block') {
+          document.getElementById('match-notification').style.display = 'none';
+          document.getElementById('test-results').style.display = 'block';
+        } else if (document.getElementById('test-results').style.display === 'block') {
+          document.getElementById('test-results').style.display = 'none';
+          document.getElementById('test-questions').style.display = 'block';
+          loadQuestion(compatibilityTest.currentQuestion);
+        } else {
+          showSection('friends');
+        }
+      } else {
+        showSection('friends');
+      }
+      
+      // Скрываем кнопку "Назад", если вернулись на начальный экран
+      if (currentSection === 'friends') {
+        document.querySelector('.btn-back').style.display = 'none';
+      }
+    }
+    
+    // Функция для инициализации приложения
+    function initApp() {
+      createStars();
+      
+      // Проверяем, зарегистрирован ли пользователь
+      setTimeout(() => {
+        document.querySelector('.btn-back').style.display = 'none';
+      }, 500);
+    }
+    
+    // Инициализация при загрузке страницы
+    window.onload = initApp;
+  </script>
+</body>
+</html>

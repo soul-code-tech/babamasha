@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Число судьбы</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Caveat', cursive;
+      background: #0a0a1a url('assets/images/stars.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #e0d4f7;
+      text-align: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 30, 60, 0.85);
+      z-index: -1;
+    }
+
+    /* Эффект мерцающих звезд в фоне */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    .page {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 45px auto;
+      padding: 35px;
+      background: rgba(15, 40, 70, 0.8);
+      border: 1px solid #2196f3;
+      border-radius: 25px;
+      box-shadow: 0 0 35px rgba(33, 150, 243, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, transparent, #2196f3, transparent);
+    }
+
+    .container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, transparent, #2196f3, transparent);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: #bbdefb;
+      font-size: 2.6em;
+      text-shadow: 0 0 12px #2196f3, 0 0 20px rgba(33, 150, 243, 0.6);
+      margin-bottom: 25px;
+      position: relative;
+      letter-spacing: 1px;
+    }
+
+    h1::after {
+      content: '';
+      display: block;
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #2196f3, transparent);
+      margin: 15px auto;
+    }
+
+    .question {
+      background: rgba(20, 50, 80, 0.3);
+      border-radius: 18px;
+      padding: 25px;
+      margin: 35px 0;
+      border: 1px dashed #2196f3;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .question::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: 0.6s;
+      z-index: -1;
+    }
+
+    .question:hover::before {
+      left: 100%;
+    }
+
+    .question-text {
+      font-size: 1.8em;
+      color: #bbdefb;
+      margin-bottom: 25px;
+      line-height: 1.4;
+      text-shadow: 0 0 10px rgba(187, 222, 251, 0.5);
+      font-family: 'Playfair Display', serif;
+      position: relative;
+      z-index: 2;
+    }
+
+    .question-subtext {
+      font-size: 1.4em;
+      color: #e3f2fd;
+      margin-bottom: 25px;
+      line-height: 1.4;
+      font-style: italic;
+    }
+
+    button {
+      background: linear-gradient(135deg, #2196f3, #1565c0);
+      color: white;
+      border: none;
+      padding: 18px 40px;
+      font-size: 1.45em;
+      font-family: 'Caveat', cursive;
+      cursor: pointer;
+      border-radius: 35px;
+      box-shadow: 0 0 25px rgba(33, 150, 243, 0.7);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.6s;
+      z-index: -1;
+    }
+
+    button:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 0 35px rgba(33, 150, 243, 0.9);
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    .number-container {
+      margin: 35px auto;
+      width: 300px;
+      height: 300px;
+      position: relative;
+    }
+
+    .number-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5em;
+      font-weight: bold;
+      color: #4fc3f7;
+      text-shadow: 0 0 15px rgba(79, 195, 247, 0.7);
+      animation: pulse 2s infinite;
+      z-index: 2;
+    }
+
+    .number-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 270px;
+      height: 270px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(33, 150, 243, 0.2), transparent 70%);
+      z-index: 1;
+    }
+
+    .number-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .line {
+      position: absolute;
+      background: rgba(33, 150, 243, 0.3);
+      transform-origin: center;
+    }
+
+    .line-1 {
+      width: 2px;
+      height: 220px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    .line-2 {
+      width: 2px;
+      height: 220px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .line-3 {
+      width: 2px;
+      height: 220px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .line-4 {
+      width: 2px;
+      height: 220px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(135deg);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 30px rgba(79, 195, 247, 0.5); }
+      50% { box-shadow: 0 0 50px rgba(79, 195, 247, 0.8); }
+      100% { box-shadow: 0 0 30px rgba(79, 195, 247, 0.5); }
+    }
+
+    .result {
+      margin: 30px auto;
+      padding: 25px;
+      max-width: 650px;
+      background: rgba(20, 50, 80, 0.75);
+      border: 1px solid #2196f3;
+      border-radius: 18px;
+      box-shadow: 0 0 25px rgba(33, 150, 243, 0.4);
+      display: none;
+      animation: resultFade 0.5s ease;
+    }
+
+    @keyframes resultFade {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .result-title {
+      font-family: 'Playfair Display', serif;
+      color: #bbdefb;
+      font-size: 2.2em;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px rgba(187, 222, 251, 0.5);
+    }
+
+    .result-desc {
+      color: #e3f2fd;
+      line-height: 1.6;
+      font-size: 1.3em;
+    }
+
+    .nav-buttons {
+      margin: 50px auto 25px;
+      display: flex;
+      justify-content: space-between;
+      max-width: 550px;
+    }
+
+    .btn-back, .btn-home {
+      display: inline-block;
+      padding: 13px 25px;
+      background: rgba(79, 195, 247, 0.25);
+      color: #4fc3f7;
+      text-decoration: none;
+      border: 1px solid #4fc3f7;
+      border-radius: 12px;
+      font-size: 1.15em;
+      font-family: 'Caveat', cursive;
+      transition: all 0.35s ease;
+      box-shadow: 0 0 10px rgba(79, 195, 247, 0.3);
+    }
+
+    .btn-back:hover, .btn-home:hover {
+      background: rgba(79, 195, 247, 0.45);
+      transform: scale(1.08);
+      box-shadow: 0 0 15px rgba(79, 195, 247, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  
+  <div class="page">
+    <div class="container">
+      <h1>🔢 Число судьбы</h1>
+      
+      <div class="question">
+        <p class="question-text">Введи дату рождения... и узнай свое число судьбы</p>
+        <p class="question-subtext">Число, которое раскроет твою жизненную миссию</p>
+      </div>
+
+      <div style="margin: 20px 0;">
+        <input type="date" id="birthdate" style="padding: 12px 20px; font-size: 1.2em; border-radius: 10px; border: 2px solid #2196f3; background: rgba(0, 30, 60, 0.5); color: white;">
+      </div>
+
+      <button onclick="calculateNumber()">Узнать число</button>
+
+      <div class="number-container">
+        <div class="number-lines">
+          <div class="line line-1"></div>
+          <div class="line line-2"></div>
+          <div class="line line-3"></div>
+          <div class="line line-4"></div>
+        </div>
+        <div class="number-glow"></div>
+        <div class="number-circle" id="number">7</div>
+      </div>
+
+      <div class="result" id="result">
+        <h2 class="result-title">Значение числа</h2>
+        <p class="result-desc" id="result-desc">Число 7 указывает на то, что вы - искатель истины и знаний. Ваша жизненная миссия связана с поиском глубинного смысла и духовного роста. Вы обладаете сильной интуицией и аналитическим умом. В этот период жизни вам важно найти баланс между разумом и духовностью. Не бойтесь задавать сложные вопросы - ответы придут в свое время.</p>
+      </div>
+
+      <div class="nav-buttons">
+        <a href="gadaniya.html" class="btn-back">⬅️ Назад</a>
+        <a href="index.html" class="btn-home">🏠 Главное меню</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Создаем мерцающие звезды
+    function createStars() {
+      const starsContainer = document.getElementById('stars');
+      const starCount = 100;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // Случайные параметры для звезд
+        const size = Math.random() * 3;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const delay = Math.random() * 5;
+        const duration = 2 + Math.random() * 5;
+        
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${posX}%`;
+        star.style.top = `${posY}%`;
+        star.style.animationDelay = `${delay}s`;
+        star.style.animationDuration = `${duration}s`;
+        
+        starsContainer.appendChild(star);
+      }
+    }
+    
+    // Создаем частицы, похожие на энергетические потоки
+    function createEnergyParticles() {
+      const container = document.querySelector('.container');
+      
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        const size = Math.random() * 8 + 3;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.borderRadius = '50%';
+        
+        // Случайный цвет частицы (синие оттенки)
+        const hue = 200 + Math.random() * 40;
+        particle.style.background = `hsla(${hue}, 100%, 70%, ${Math.random() * 0.7 + 0.3})`;
+        
+        // Случайное положение
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        
+        // Анимация
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 5;
+        particle.style.animation = `floatParticle ${duration}s ${delay}s infinite ease-in-out`;
+        
+        container.appendChild(particle);
+        
+        // Добавляем анимацию для частиц
+        const style = document.createElement('style');
+        style.innerHTML = `
+          @keyframes floatParticle {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: ${Math.random()}; }
+            25% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * -50}px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.8}); }
+            50% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * -100}px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.8}); opacity: ${Math.random()}; }
+            75% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * -50}px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.8}); }
+            100% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: ${Math.random()}; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+    
+    function calculateNumber() {
+      const birthdate = document.getElementById('birthdate').value;
+      if (!birthdate) {
+        alert('Пожалуйста, введите дату рождения');
+        return;
+      }
+      
+      // Рассчитываем число судьбы
+      const date = new Date(birthdate);
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      
+      // Складываем все цифры
+      let sum = 0;
+      const fullDate = `${day}${month}${year}`;
+      for (let i = 0; i < fullDate.length; i++) {
+        sum += parseInt(fullDate[i]);
+      }
+      
+      // Приводим к однозначному числу (кроме 11, 22, 33)
+      let fateNumber = sum;
+      if (fateNumber > 9 && ![11, 22, 33].includes(fateNumber)) {
+        fateNumber = Math.floor(fateNumber / 10) + (fateNumber % 10);
+        if (fateNumber > 9) {
+          fateNumber = Math.floor(fateNumber / 10) + (fateNumber % 10);
+        }
+      }
+      
+      // Анимация появления числа
+      const numberCircle = document.querySelector('.number-circle');
+      numberCircle.style.transform = 'translate(-50%, -50%) scale(1.5)';
+      numberCircle.style.opacity = '0';
+      
+      setTimeout(() => {
+        document.getElementById("number").textContent = fateNumber;
+        
+        // Возвращаем к исходному состоянию
+        numberCircle.style.transition = 'all 0.5s ease';
+        numberCircle.style.transform = 'translate(-50%, -50%)';
+        numberCircle.style.opacity = '1';
+        
+        // Показываем результат
+        setTimeout(() => {
+          const meanings = [
+            "Число 1 указывает на то, что вы - лидер по своей природе. Ваша жизненная миссия связана с проявлением индивидуальности и инициативы. Вы пришли в этот мир, чтобы создавать, начинать новое и вдохновлять других. Сейчас самое время проявить смелость и следовать за своими идеями.",
+            "Число 2 говорит о том, что вы - мастер гармонии и дипломатии. Ваша жизненная миссия связана с объединением людей и созданием баланса. Вы обладаете тонкой интуицией и способностью чувствовать других. Сейчас важно научиться доверять своей интуиции и искать гармонию во всем.",
+            "Число 3 указывает на то, что вы - творческая душа. Ваша жизненная миссия связана с самовыражением и распространением радости. Вы пришли в этот мир, чтобы творить и вдохновлять других своим оптимизмом. Сейчас самое время проявить свои творческие способности и делиться ими с миром.",
+            "Число 4 говорит о том, что вы - строитель и опора. Ваша жизненная миссия связана с созданием прочного фундамента для себя и других. Вы обладаете практичностью и трудолюбием. Сейчас важно сосредоточиться на построении прочной основы для будущего.",
+            "Число 5 указывает на то, что вы - искатель свободы и приключений. Ваша жизненная миссия связана с исследованием и адаптацией к изменениям. Вы пришли в этот мир, чтобы учиться через опыт и делиться своими знаниями. Сейчас время для перемен и новых начинаний.",
+            "Число 6 говорит о том, что вы - хранитель гармонии в семье и обществе. Ваша жизненная миссия связана с заботой о других и созданием уюта. Вы обладаете сильным чувством ответственности. Сейчас важно найти баланс между заботой о других и заботой о себе.",
+            "Число 7 указывает на то, что вы - искатель истины и знаний. Ваша жизненная миссия связана с поиском глубинного смысла и духовного роста. Вы обладаете сильной интуицией и аналитическим умом. В этот период жизни вам важно найти баланс между разумом и духовностью. Не бойтесь задавать сложные вопросы - ответы придут в свое время.",
+            "Число 8 говорит о том, что вы - мастер материального мира. Ваша жизненная миссия связана с достижением успеха и управлением ресурсами. Вы обладаете организаторскими способностями и чувством справедливости. Сейчас важно научиться балансировать между материальным и духовным аспектами жизни.",
+            "Число 9 указывает на то, что вы - гуманист и целитель. Ваша жизненная миссия связана с служением человечеству и завершением циклов. Вы обладаете состраданием и широким кругозором. Сейчас время отпустить прошлое и подготовиться к новому этапу жизни.",
+            "Число 11 - это мастер-число, указывающее на вашу миссию как духовного просветителя. Вы обладаете сильной интуицией и вдохновляющей энергией. Ваша задача - быть маяком для других. Сейчас важно прислушиваться к внутреннему голосу и не бояться следовать за вдохновением.",
+            "Число 22 - это мастер-число, указывающее на вашу миссию как строителя великих дел. Вы обладаете способностью превращать мечты в реальность. Ваша задача - создавать что-то масштабное и полезное для человечества. Сейчас важно сосредоточиться на долгосрочных проектах.",
+            "Число 33 - это мастер-число, указывающее на вашу миссию как учителя и целителя. Вы обладаете сильной энергией любви и сострадания. Ваша задача - помогать другим находить свой путь. Сейчас важно проявлять заботу и делиться своими знаниями."
+          ];
+          
+          document.getElementById("result-desc").textContent = meanings[fateNumber - 1] || meanings[6]; // По умолчанию число 7
+          document.getElementById("result").style.display = "block";
+          document.querySelector("button").style.display = "none";
+        }, 500);
+      }, 500);
+    }
+    
+    // Инициализация
+    window.onload = function() {
+      createStars();
+      createEnergyParticles();
+      
+      // Устанавливаем текущую дату по умолчанию
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = (today.getMonth() + 1).toString().padStart(2, '0');
+      const day = today.getDate().toString().padStart(2, '0');
+      document.getElementById('birthdate').value = `${year}-${month}-${day}`;
+    };
+  </script>
+</body>
+</html>

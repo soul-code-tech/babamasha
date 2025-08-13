@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Гадания бабы Маши</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Caveat', cursive;
+      background: #1a0b2e url('assets/images/magic-room.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #e0d4f7;
+      text-align: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 5, 30, 0.85);
+      z-index: -1;
+    }
+
+    /* Эффект мерцающих звезд в фоне */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    .page {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 35px auto;
+      padding: 35px;
+      background: rgba(30, 15, 50, 0.75);
+      border: 1px solid #b19cd9;
+      border-radius: 25px;
+      box-shadow: 0 0 35px rgba(177, 156, 217, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, transparent, #b19cd9, transparent);
+    }
+
+    .container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, transparent, #b19cd9, transparent);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: #d8b8ff;
+      font-size: 2.6em;
+      text-shadow: 0 0 12px #b19cd9, 0 0 20px rgba(177, 156, 217, 0.6);
+      margin-bottom: 18px;
+      position: relative;
+      letter-spacing: 1px;
+    }
+
+    h1::after {
+      content: '';
+      display: block;
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #b19cd9, transparent);
+      margin: 12px auto;
+    }
+
+    p {
+      color: #e8e4f0;
+      font-size: 1.35em;
+      margin-bottom: 35px;
+      line-height: 1.6;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 22px;
+      margin: 35px 0;
+    }
+
+    .card-link {
+      display: block;
+      padding: 20px 18px;
+      background: rgba(90, 40, 120, 0.45);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 18px;
+      font-size: 1.35em;
+      font-weight: bold;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 0 15px rgba(177, 156, 217, 0.3), inset 0 0 10px rgba(177, 156, 217, 0.2);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .card-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+      transition: 0.6s;
+      z-index: -1;
+    }
+
+    .card-link:hover {
+      background: rgba(120, 60, 150, 0.65);
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 0 25px rgba(177, 156, 217, 0.6), inset 0 0 15px rgba(177, 156, 217, 0.3);
+    }
+
+    .card-link:hover::before {
+      left: 100%;
+    }
+
+    .icon {
+      width: 42px;
+      height: 42px;
+      margin: 0 auto 14px;
+      filter: drop-shadow(0 0 5px rgba(177, 156, 217, 0.7));
+      transition: transform 0.4s ease;
+    }
+
+    .card-link:hover .icon {
+      transform: scale(1.25) rotate(10deg);
+    }
+
+    .nav-buttons {
+      margin: 45px auto 25px;
+      display: flex;
+      justify-content: space-between;
+      max-width: 550px;
+    }
+
+    .btn-back, .btn-home {
+      display: inline-block;
+      padding: 12px 25px;
+      background: rgba(248, 215, 0, 0.25);
+      color: #f8d700;
+      text-decoration: none;
+      border: 1px solid #f8d700;
+      border-radius: 12px;
+      font-size: 1.1em;
+      font-family: 'Caveat', cursive;
+      transition: all 0.35s ease;
+      box-shadow: 0 0 10px rgba(248, 215, 0, 0.3);
+    }
+
+    .btn-back:hover, .btn-home:hover {
+      background: rgba(248, 215, 0, 0.45);
+      transform: scale(1.08);
+      box-shadow: 0 0 15px rgba(248, 215, 0, 0.5);
+    }
+
+    /* Уникальные иконки для каждого гадания */
+    .tarot-icon { color: #d4af37; }
+    .cards-icon { color: #c71585; }
+    .tree-icon { color: #2e8b57; }
+    .orb-icon { color: #9370db; }
+    .word-icon { color: #ff69b4; }
+    .number-icon { color: #1e90ff; }
+    .runes-icon { color: #8b4513; }
+    .book-icon { color: #800000; }
+    .moon-icon { color: #e0ffff; }
+    .wish-icon { color: #ff1493; }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  
+  <div class="page">
+    <div class="container">
+      <h1>🔮 Выбери гадание</h1>
+      <p>Задай вопрос — и баба Маша поможет услышать ответ</p>
+
+      <div class="grid">
+        <!-- 1. Карта дня -->
+        <a href="tarot-day.html" class="card-link">
+          <svg class="icon tarot-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4H20C21.1046 4 22 4.89543 22 6V18C22 19.1046 21.1046 20 20 20H4C2.89543 20 2 19.1046 2 18V6C2 4.89543 2.89543 4 4 4Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 8V16" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 12H16" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Карта дня
+        </a>
+
+        <!-- 2. Три карты -->
+        <a href="three-cards.html" class="card-link">
+          <svg class="icon cards-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 6H9C10.1046 6 11 6.89543 11 8V16C11 17.1046 10.1046 18 9 18H3C1.89543 18 1 17.1046 1 16V8C1 6.89543 1.89543 6 3 6Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M9 4V8M9 16V20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M9 6L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M15 4H21C22.1046 4 23 4.89543 23 6V14C23 15.1046 22.1046 16 21 16H15C13.8954 16 13 15.1046 13 14V6C13 4.89543 13.8954 4 15 4Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M21 6V10M21 14V18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Три карты
+        </a>
+
+        <!-- 3. Дерево желаний -->
+        <a href="tree.html" class="card-link">
+          <svg class="icon tree-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L8 10L12 8L16 10L12 2Z" fill="currentColor" fill-opacity="0.7"/>
+            <path d="M8 10V20H16V10" fill="currentColor" fill-opacity="0.9"/>
+            <path d="M12 20V22" stroke="currentColor" stroke-width="2"/>
+            <path d="M10 14H14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M11 16H13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Дерево желаний
+        </a>
+
+        <!-- 4. Магический шар -->
+        <a href="magic-orb.html" class="card-link">
+          <svg class="icon orb-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="url(#glow)"/>
+            <defs>
+              <radialGradient id="glow" cx="0.5" cy="0.5" r="0.7">
+                <stop offset="0%" stop-color="currentColor" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="currentColor" stop-opacity="0.05"/>
+              </radialGradient>
+            </defs>
+            <path d="M15 9L9 15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M9 9L15 15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Магический шар
+        </a>
+
+        <!-- 5. Судьбоносное слово -->
+        <a href="fate-word.html" class="card-link">
+          <svg class="icon word-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 7H20M4 12H20M4 17H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="16" cy="17" r="2" fill="white"/>
+            <circle cx="19" cy="17" r="2" fill="white"/>
+          </svg>
+          Судьбоносное слово
+        </a>
+
+        <!-- 6. Число судьбы -->
+        <a href="fate-number.html" class="card-link">
+          <svg class="icon number-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <text x="12" y="16" text-anchor="middle" fill="white" font-size="10" font-family="Arial">7</text>
+            <path d="M12 8V12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 16H12.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Число судьбы
+        </a>
+
+        <!-- 7. Руны -->
+        <a href="runes.html" class="card-link">
+          <svg class="icon runes-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 4L6 20M12 4L12 20M18 4L18 20" stroke="currentColor" stroke-width="2"/>
+            <path d="M6 8L12 12L18 8" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 12V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="18" r="1" fill="white"/>
+          </svg>
+          Гадание на рунах
+        </a>
+
+        <!-- 8. Книга судьбы -->
+        <a href="book.html" class="card-link">
+          <svg class="icon book-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 6H20M4 12H20M4 18H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M18 10V16C18 17.1046 17.1046 18 16 18H8C6.89543 18 6 17.1046 6 16V8C6 6.89543 6.89543 6 8 6H16C17.1046 6 18 6.89543 18 8V10Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 12H12.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Книга судьбы
+        </a>
+
+        <!-- 9. Лунный календарь -->
+        <a href="moon.html" class="card-link">
+          <svg class="icon moon-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 8V12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 16H12.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Лунный календарь
+        </a>
+
+        <!-- 10. Загадай желание -->
+        <a href="wish.html" class="card-link">
+          <svg class="icon wish-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="3" fill="white"/>
+            <path d="M10 10L8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M14 10L16 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M10 14L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M14 14L16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Загадай желание
+        </a>
+      </div>
+
+      <div class="nav-buttons">
+        <a href="index.html" class="btn-back">⬅️ Назад</a>
+        <a href="index.html" class="btn-home">🏠 Главное меню</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Создаем мерцающие звезды
+    function createStars() {
+      const starsContainer = document.getElementById('stars');
+      const starCount = 120;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // Случайные параметры для звезд
+        const size = Math.random() * 3;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const delay = Math.random() * 5;
+        const duration = 2 + Math.random() * 5;
+        
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${posX}%`;
+        star.style.top = `${posY}%`;
+        star.style.animationDelay = `${delay}s`;
+        star.style.animationDuration = `${duration}s`;
+        
+        starsContainer.appendChild(star);
+      }
+    }
+    
+    // Создаем магические частицы
+    function createMagicParticles() {
+      const container = document.querySelector('.container');
+      
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        const size = Math.random() * 8 + 3;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        // Случайная форма частицы
+        if (Math.random() > 0.5) {
+          particle.style.borderRadius = '50%';
+        } else {
+          particle.style.transform = `rotate(${Math.random() * 360}deg)`;
+        }
+        
+        // Случайный цвет частицы
+        const hue = Math.random() * 60 + 220; // оттенки фиолетового и синего
+        particle.style.background = `hsla(${hue}, 100%, 70%, ${Math.random() * 0.7 + 0.3})`;
+        
+        // Случайное положение
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        
+        // Анимация
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 5;
+        particle.style.animation = `floatParticle ${duration}s ${delay}s infinite ease-in-out`;
+        
+        container.appendChild(particle);
+        
+        // Добавляем анимацию для частиц
+        const style = document.createElement('style');
+        style.innerHTML = `
+          @keyframes floatParticle {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * -50}px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.8}); }
+            50% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * -100}px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.8}); }
+            75% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * -50}px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.8}); }
+            100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+    
+    // Инициализация
+    window.onload = function() {
+      createStars();
+      createMagicParticles();
+    };
+  </script>
+</body>
+</html>

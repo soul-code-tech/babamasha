@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Карта дня</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Caveat', cursive;
+      background: #0a0a1a url('assets/images/magic-room.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #e0d4f7;
+      text-align: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: -1;
+    }
+
+    /* Эффект мерцающих звезд в фоне */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    .page {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 45px auto;
+      padding: 35px;
+      background: rgba(30, 15, 50, 0.8);
+      border: 1px solid #b19cd9;
+      border-radius: 25px;
+      box-shadow: 0 0 35px rgba(177, 156, 217, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, transparent, #b19cd9, transparent);
+    }
+
+    .container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, transparent, #b19cd9, transparent);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: #d8b8ff;
+      font-size: 2.6em;
+      text-shadow: 0 0 12px #b19cd9, 0 0 20px rgba(177, 156, 217, 0.6);
+      margin-bottom: 25px;
+      position: relative;
+      letter-spacing: 1px;
+    }
+
+    h1::after {
+      content: '';
+      display: block;
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #b19cd9, transparent);
+      margin: 15px auto;
+    }
+
+    .question {
+      background: rgba(100, 50, 150, 0.3);
+      border-radius: 18px;
+      padding: 25px;
+      margin: 35px 0;
+      border: 1px dashed #b19cd9;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .question::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: 0.6s;
+      z-index: -1;
+    }
+
+    .question:hover::before {
+      left: 100%;
+    }
+
+    .question-text {
+      font-size: 1.8em;
+      color: #f8d700;
+      margin-bottom: 25px;
+      line-height: 1.4;
+      text-shadow: 0 0 10px rgba(248, 215, 0, 0.5);
+      font-family: 'Playfair Display', serif;
+      position: relative;
+      z-index: 2;
+    }
+
+    .question-subtext {
+      font-size: 1.4em;
+      color: #e0d4f7;
+      margin-bottom: 25px;
+      line-height: 1.4;
+      font-style: italic;
+    }
+
+    button {
+      background: linear-gradient(135deg, #b19cd9, #8a2be2);
+      color: white;
+      border: none;
+      padding: 18px 40px;
+      font-size: 1.45em;
+      font-family: 'Caveat', cursive;
+      cursor: pointer;
+      border-radius: 35px;
+      box-shadow: 0 0 25px rgba(177, 156, 217, 0.7);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.6s;
+      z-index: -1;
+    }
+
+    button:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 0 35px rgba(177, 156, 217, 0.9);
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    .card {
+      margin: 40px auto;
+      padding: 25px;
+      max-width: 650px;
+      background: rgba(0, 0, 0, 0.75);
+      border: 1px solid #b19cd9;
+      border-radius: 18px;
+      box-shadow: 0 0 25px rgba(177, 156, 217, 0.4);
+      display: none;
+      animation: resultFade 0.5s ease;
+    }
+
+    @keyframes resultFade {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .card-img-container {
+      position: relative;
+      width: 280px;
+      height: 400px;
+      margin: 0 auto 25px;
+      perspective: 1000px;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(177, 156, 217, 0.6);
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+
+    .card-img.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      backface-visibility: hidden;
+      border-radius: 12px;
+    }
+
+    .card-back {
+      background: url('assets/images/tarot-back.jpg') no-repeat center;
+      background-size: cover;
+    }
+
+    .card-front {
+      background-color: white;
+      transform: rotateY(180deg); /* Поворачиваем лицевую сторону на 180 градусов, чтобы она была видна при перевороте */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .card-info {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .card-number {
+      color: #b19cd9;
+      font-size: 1.4em;
+      margin-bottom: 5px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      color: #d8b8ff;
+      font-size: 2.2em;
+      margin: 10px 0;
+      text-shadow: 0 0 10px rgba(216, 184, 255, 0.5);
+    }
+
+    .card-desc {
+      color: #fff;
+      line-height: 1.6;
+      font-size: 1.3em;
+    }
+
+    .nav-buttons {
+      margin: 50px auto 25px;
+      display: flex;
+      justify-content: space-between;
+      max-width: 550px;
+    }
+
+    .btn-back, .btn-home {
+      display: inline-block;
+      padding: 13px 25px;
+      background: rgba(248, 215, 0, 0.25);
+      color: #f8d700;
+      text-decoration: none;
+      border: 1px solid #f8d700;
+      border-radius: 12px;
+      font-size: 1.15em;
+      font-family: 'Caveat', cursive;
+      transition: all 0.35s ease;
+      box-shadow: 0 0 10px rgba(248, 215, 0, 0.3);
+    }
+
+    .btn-back:hover, .btn-home:hover {
+      background: rgba(248, 215, 0, 0.45);
+      transform: scale(1.08);
+      box-shadow: 0 0 15px rgba(248, 215, 0, 0.5);
+    }
+
+    /* Эффекты для карты */
+    .flip-in {
+      animation: flipIn 0.8s;
+    }
+
+    @keyframes flipIn {
+      0% { transform: rotateY(0deg) scale(0.8); opacity: 0; }
+      50% { transform: rotateY(90deg) scale(1); opacity: 0.7; }
+      100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  
+  <div class="page">
+    <div class="container">
+      <h1>🃏 Карта дня</h1>
+      
+      <div class="question">
+        <p class="question-text">Нажми кнопку — и Вселенная откроет тебе своё послание</p>
+        <p class="question-subtext">Получи мудрость Старших Арканов и следуй своему пути</p>
+      </div>
+
+      <button onclick="drawCard()">Получить карту</button>
+
+      <div class="card" id="result">
+        <div class="card-img-container">
+          <div class="card-img flipped" id="card-img">
+            <div class="card-back"></div>
+            <div class="card-front">
+              <img class="card-image" id="card-image" src="assets/images/tarot-back.jpg" alt="Изображение карты">
+            </div>
+          </div>
+        </div>
+        <div class="card-info">
+          <div class="card-number" id="card-number">I. Маг</div>
+          <div class="card-title" id="card-title">Маг</div>
+        </div>
+        <p class="card-desc" id="card-desc">Ты — творец своей реальности. Совет: 'Сделай первый шаг — Вселенная поддержит.'</p>
+      </div>
+
+      <div class="nav-buttons">
+        <a href="gadaniya.html" class="btn-back">⬅️ Назад</a>
+        <a href="index.html" class="btn-home">🏠 Главное меню</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Создаем мерцающие звезды
+    function createStars() {
+      const starsContainer = document.getElementById('stars');
+      const starCount = 100;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // Случайные параметры для звезд
+        const size = Math.random() * 3;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const delay = Math.random() * 5;
+        const duration = 2 + Math.random() * 5;
+        
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${posX}%`;
+        star.style.top = `${posY}%`;
+        star.style.animationDelay = `${delay}s`;
+        star.style.animationDuration = `${duration}s`;
+        
+        starsContainer.appendChild(star);
+      }
+    }
+    
+    // Создаем частицы, похожие на энергетические потоки
+    function createEnergyParticles() {
+      const container = document.querySelector('.container');
+      
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        const size = Math.random() * 8 + 3;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.borderRadius = '50%';
+        
+        // Случайный цвет частицы (фиолетовые и золотые оттенки)
+        const hue = Math.random() > 0.5 ? (270 + Math.random() * 30) : (50 + Math.random() * 20);
+        particle.style.background = `hsla(${hue}, 100%, 70%, ${Math.random() * 0.7 + 0.3})`;
+        
+        // Случайное положение
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        
+        // Анимация
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 5;
+        particle.style.animation = `floatParticle ${duration}s ${delay}s infinite ease-in-out`;
+        
+        container.appendChild(particle);
+        
+        // Добавляем анимацию для частиц
+        const style = document.createElement('style');
+        style.innerHTML = `
+          @keyframes floatParticle {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: ${Math.random()}; }
+            25% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * -50}px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.8}); }
+            50% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * -100}px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.8}); opacity: ${Math.random()}; }
+            75% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * -50}px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.8}); }
+            100% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: ${Math.random()}; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+    
+    const cards = [
+      { 
+        number: "0. Шут", 
+        name: "Шут", 
+        img: "assets/images/cards/shut.jpg", 
+        desc: "Ты стоишь на краю. Совет: 'Не бойся падать — ты не упадёшь. Иногда нужно отпустить контроль, чтобы найти свой путь.'" 
+      },
+      { 
+        number: "I. Маг", 
+        name: "Маг", 
+        img: "assets/images/cards/mag.jpg", 
+        desc: "Ты — творец своей реальности. Совет: 'Сделай первый шаг — Вселенная поддержит. Используй свои таланты и ресурсы мудро.'" 
+      },
+      { 
+        number: "II. Верховная Жрица", 
+        name: "Верховная Жрица", 
+        img: "assets/images/cards/zhritsa.jpg", 
+        desc: "Ты чувствуешь то, что скрыто. Совет: 'Не ищи ответа — он уже в тебе. Прислушайся к своей интуиции и внутренней мудрости.'" 
+      },
+      { 
+        number: "III. Императрица", 
+        name: "Императрица", 
+        img: "assets/images/cards/imperatrica.jpg", 
+        desc: "Ты — источник жизни и красоты. Совет: 'Дай себе право на роскошь и заботу. Плодородие приходит, когда ты любишь и ценишь себя.'" 
+      },
+      { 
+        number: "IV. Император", 
+        name: "Император", 
+        img: "assets/images/cards/imperator.jpg", 
+        desc: "Ты — строитель, правитель, опора. Совет: 'Будь сильным — но не жестоким. Используй свою власть для создания прочного фундамента.'" 
+      },
+      { 
+        number: "V. Верховный Жрец", 
+        name: "Верховный Жрец", 
+        img: "assets/images/cards/zhrec.jpg", 
+        desc: "Ты — хранитель знаний и традиций. Совет: 'Ищи мудрость в учении, но не бойся задавать вопросы. Истинное знание приходит через понимание, а не слепое следование.'" 
+      },
+      { 
+        number: "VI. Влюбленные", 
+        name: "Влюбленные", 
+        img: "assets/images/cards/vlyublennye.jpg", 
+        desc: "Ты стоишь перед выбором. Совет: 'Выбирай не по уму, а по сердцу. Истинная любовь приходит, когда ты остаешься верен себе.'" 
+      },
+      { 
+        number: "VII. Колесница", 
+        name: "Колесница", 
+        img: "assets/images/cards/kolesnica.jpg", 
+        desc: "Ты одержишь победу через усилие. Совет: 'Управляй своими противоречивыми частями. Победа приходит, когда разум и эмоции работают в унисон.'" 
+      },
+      { 
+        number: "VIII. Сила", 
+        name: "Сила", 
+        img: "assets/images/cards/sila.JFIF", 
+        desc: "Ты сильнее, чем думаешь. Совет: 'Победи не врага — а себя. Истинная сила рождается из мягкости и сострадания.'" 
+      },
+      { 
+        number: "IX. Отшельник", 
+        name: "Отшельник", 
+        img: "assets/images/cards/otshelnik.jpg", 
+        desc: "Ты ищешь внутренний свет. Совет: 'Остановись и прислушайся. Мудрость приходит в тишине, когда ты готов ее услышать.'" 
+      },
+      { 
+        number: "X. Колесо Фортуны", 
+        name: "Колесо Фортуны", 
+        img: "assets/images/cards/koleso.jpg", 
+        desc: "Ты в потоке перемен. Совет: 'Прими цикличность жизни. То, что уходит, освобождает место для нового. Доверься процессу.'" 
+      },
+      { 
+        number: "XI. Правосудие", 
+        name: "Правосудие", 
+        img: "assets/images/cards/pravosudie.jpg", 
+        desc: "Ты стоишь перед выбором. Совет: 'Действуй справедливо и честно. Твои решения сегодня создают твою реальность завтра.'" 
+      },
+      { 
+        number: "XII. Повешенный", 
+        name: "Повешенный", 
+        img: "assets/images/cards/poveshennyi.jpg", 
+        desc: "Ты видишь мир иначе. Совет: 'Иногда нужно остановиться, чтобы увидеть дальше. Перспектива меняется, когда ты меняешь точку зрения.'" 
+      },
+      { 
+        number: "XIII. Смерть", 
+        name: "Смерть", 
+        img: "assets/images/cards/smerť.jpg", 
+        desc: "Что-то в твоей жизни заканчивается. Совет: 'Отпусти. Ты не умираешь — ты перерождаешься. Каждый конец — начало чего-то нового.'" 
+      },
+      { 
+        number: "XIV. Умеренность", 
+        name: "Умеренность", 
+        img: "assets/images/cards/umerennost.jpg", 
+        desc: "Ты находишь баланс. Совет: 'Соедини противоположности. Гармония рождается, когда ты находишь золотую середину между крайностями.'" 
+      },
+      { 
+        number: "XV. Дьявол", 
+        name: "Дьявол", 
+        img: "assets/images/cards/dyavol.jpg", 
+        desc: "Ты сталкиваешься с соблазнами. Совет: 'Освободись от оков. Истинная свобода приходит, когда ты осознаешь свои скрытые желания и страхи.'" 
+      },
+      { 
+        number: "XVI. Башня", 
+        name: "Башня", 
+        img: "assets/images/cards/bashnya.jpg", 
+        desc: "Твои убеждения рушатся. Совет: 'Прими разрушение как необходимый этап. Из руин возрождается что-то более прочное и истинное.'" 
+      },
+      { 
+        number: "XVII. Звезда", 
+        name: "Звезда", 
+        img: "assets/images/cards/zvezda.jpg", 
+        desc: "Ты видишь свет после тьмы. Совет: 'Верь — даже если всё тёмно. Надежда — это не просто чувство, это сила, которая ведет тебя вперед.'" 
+      },
+      { 
+        number: "XVIII. Луна", 
+        name: "Луна", 
+        img: "assets/images/cards/luna.jpg", 
+        desc: "Ты сталкиваешься с иллюзиями. Совет: 'Не бойся теней. Правда скрыта за страхами, а интуиция — твой путеводитель в темноте.'" 
+      },
+      { 
+        number: "XIX. Солнце", 
+        name: "Солнце", 
+        img: "assets/images/cards/solnce.jpg", 
+        desc: "Ты в эпоху света, радости, успеха. Совет: 'Наслаждайся моментом — он для тебя. Свет внутри тебя освещает путь не только тебе, но и другим.'" 
+      },
+      { 
+        number: "XX. Суд", 
+        name: "Суд", 
+        img: "assets/images/cards/sud.jpg", 
+        desc: "Ты слышишь зов перемены. Совет: 'Восстань из прошлого. Ты не тот, кем был вчера. Каждый день — шанс начать заново.'" 
+      },
+      { 
+        number: "XXI. Мир", 
+        name: "Мир", 
+        img: "assets/images/cards/mir.jpg", 
+        desc: "Ты достигаешь завершенности. Совет: 'Заверши цикл. Ты часть целого, и целое — часть тебя. Наслаждайся гармонией, которую ты создал.'" 
+      }
+    ];
+
+    function drawCard() {
+      const randomIndex = Math.floor(Math.random() * cards.length);
+      const card = cards[randomIndex];
+      
+      // Показываем карту
+      document.getElementById("card-number").textContent = card.number;
+      document.getElementById("card-title").textContent = card.name;
+      document.getElementById("card-desc").textContent = card.desc;
+      document.getElementById("result").style.display = "block";
+      
+      // Анимация переворачивания карты
+      const cardImg = document.getElementById("card-img");
+      cardImg.classList.remove('flipped');
+      
+      setTimeout(() => {
+        // Устанавливаем изображение
+        document.getElementById("card-image").src = card.img;
+        
+        // Завершаем анимацию переворачивания
+        cardImg.classList.add('flipped');
+      }, 500);
+      
+      // Убираем кнопку
+      document.querySelector("button").style.display = "none";
+    }
+    
+    // Инициализация
+    window.onload = function() {
+      createStars();
+      createEnergyParticles();
+    };
+  </script>
+</body>
+</html>
