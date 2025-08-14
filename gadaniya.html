@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Гадания - Бабушка Маша</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    body {
+      font-family: 'Caveat', cursive;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #e0d4f7;
+      text-align: center;
+      min-height: 100vh;
+      padding: 15px;
+      position: relative;
+      overflow: hidden;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 10, 25, 0.85);
+      z-index: -1;
+    }
+
+    /* Эффект мерцающих звезд в фоне */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      background: #e1bee7;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.5; }
+    }
+
+    .page {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      max-width: 100%;
+      margin: 15px auto;
+      padding: 20px 15px;
+      background: rgba(30, 15, 60, 0.85);
+      border: 2px solid #d4af37;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+      position: relative;
+      overflow: hidden;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    }
+
+    .container::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: #d4af37;
+      font-size: 1.9em;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+      margin-bottom: 15px;
+      position: relative;
+      letter-spacing: 1px;
+    }
+
+    h1::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #d4af37, transparent);
+      margin: 10px auto;
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      color: #e0d4f7;
+      margin-bottom: 20px;
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    .main-menu {
+      display: none; /* Убрали все иконки других подразделов сверху */
+    }
+
+    .divination-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 20px 0;
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 20px;
+    }
+
+    .divination-item {
+      background: rgba(40, 20, 70, 0.7);
+      border: 1px solid #d4af37;
+      border-radius: 16px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+
+    .divination-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+      background: rgba(50, 30, 80, 0.8);
+    }
+
+    .divination-title {
+      font-family: 'Playfair Display', serif;
+      color: #d4af37;
+      font-size: 1.3em;
+      margin-bottom: 8px;
+    }
+
+    .divination-description {
+      color: #e0d4f7;
+      font-size: 1.05em;
+      line-height: 1.4;
+    }
+
+    .divination-section {
+      display: none;
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 20px;
+    }
+
+    .divination-section.active {
+      display: block;
+    }
+
+    .baba-message {
+      background: rgba(50, 20, 80, 0.5);
+      border: 1px solid #d4af37;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 10px 0;
+      text-align: center;
+      font-style: italic;
+      color: #d1c4e9;
+      font-size: 1.1em;
+    }
+
+    .baba-humor {
+      font-style: italic;
+      color: #ff9800;
+      margin-top: 8px;
+      font-size: 1.05em;
+    }
+
+    .nav-buttons {
+      margin: 20px auto 10px;
+      display: flex;
+      justify-content: space-between;
+      max-width: 100%;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-back, .btn-home {
+      display: inline-block;
+      padding: 10px 15px;
+      background: rgba(212, 175, 55, 0.25);
+      color: #d4af37;
+      text-decoration: none;
+      border: 1px solid #d4af37;
+      border-radius: 10px;
+      font-size: 1.05em;
+      font-family: 'Caveat', cursive;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+      min-width: 120px;
+      flex: 1;
+    }
+
+    .btn-back:hover, .btn-home:hover {
+      background: rgba(212, 175, 55, 0.4);
+      transform: scale(1.03);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+    }
+
+    /* Стили для Таро */
+    .tarot-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .tarot-cards {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .tarot-card {
+      width: 150px;
+      height: 220px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/cards/back.jpg') no-repeat center center;
+      background-size: cover;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      transform-style: preserve-3d;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+      border: 2px solid transparent;
+    }
+
+    .tarot-card.selected {
+      border-color: #d4af37;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+    }
+
+    .tarot-card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .tarot-card.front {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .tarot-card.back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      transform: rotateY(180deg);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .tarot-card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .tarot-title {
+      font-weight: bold;
+      color: #d4af37;
+      margin-top: 10px;
+      font-size: 1.2em;
+    }
+
+    .tarot-meaning {
+      color: #e0d4f7;
+      font-style: italic;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+    }
+
+    .tarot-description {
+      text-align: left;
+      line-height: 1.5;
+      color: #e0d4f7;
+      font-size: 1.15em;
+      margin-top: 20px;
+    }
+
+    .btn-divination {
+      background: #d4af37;
+      color: #1a0a33;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 15px 0;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .btn-divination:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+    }
+
+    .divination-results {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .result-title {
+      font-family: 'Playfair Display', serif;
+      color: #d4af37;
+      font-size: 1.4em;
+      margin-bottom: 10px;
+    }
+
+    .result-text {
+      color: #e0d4f7;
+      line-height: 1.5;
+      font-size: 1.15em;
+    }
+
+    /* Стили для дерева желаний */
+    .wish-tree-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .wish-tree {
+      width: 250px;
+      height: 350px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/tree.jpg') no-repeat center center;
+      background-size: contain;
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .wish-leaf {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/leaf.png') no-repeat center center;
+      background-size: contain;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+
+    .wish-leaf.visible {
+      opacity: 1;
+      animation: float 3s infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .wish-input {
+      width: 100%;
+      max-width: 300px;
+      padding: 12px;
+      background: rgba(50, 20, 80, 0.5);
+      border: 1px solid #d4af37;
+      border-radius: 8px;
+      color: #e0d4f7;
+      font-size: 1.1em;
+      margin-bottom: 15px;
+    }
+
+    /* Стили для книги судеб */
+    .fate-book {
+      width: 100%;
+      max-width: 400px;
+      height: 500px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/book-cover.jpg') no-repeat center center;
+      background-size: cover;
+      border-radius: 10px;
+      position: relative;
+      margin: 20px auto;
+      perspective: 1500px;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    }
+
+    .book-cover {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #f0e6d2;
+      font-size: 2.2em;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+      font-weight: bold;
+      background: rgba(80, 40, 100, 0.9);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .book-pages {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform-origin: left;
+      backface-visibility: hidden;
+      border-radius: 10px;
+      overflow-y: auto;
+      background: rgba(40, 20, 70, 0.95);
+      color: #e0d4f7;
+      padding: 20px;
+      font-size: 1.1em;
+      line-height: 1.5;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.3) inset;
+    }
+
+    .book-pages h2 {
+      color: #d4af37;
+      text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+    }
+
+    /* Стили для рун */
+    .runes-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .runes-board {
+      width: 300px;
+      height: 300px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/runes-board.jpg') no-repeat center center;
+      background-size: cover;
+      border-radius: 10px;
+      position: relative;
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .rune {
+      width: 60px;
+      height: 60px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/rune-back.png') no-repeat center center;
+      background-size: contain;
+      position: absolute;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      transform: rotate(0deg);
+      opacity: 0;
+    }
+
+    .rune.flipped {
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/rune-front.png') no-repeat center center;
+      background-size: contain;
+      opacity: 1;
+      transform: rotate(15deg);
+    }
+
+    /* Стили для шара гадания */
+    .crystal-ball-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .crystal-ball {
+      width: 250px;
+      height: 250px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/crystal-ball.jpg') no-repeat center center;
+      background-size: contain;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 20px rgba(212, 175, 55, 0.7); }
+      50% { transform: scale(1.03); box-shadow: 0 0 25px rgba(212, 175, 55, 0.9); }
+      100% { transform: scale(1); box-shadow: 0 0 20px rgba(212, 175, 55, 0.7); }
+    }
+
+    .crystal-ball:hover {
+      transform: scale(1.05);
+      animation: none;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.9);
+    }
+
+    .vision {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      height: 180px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4af37;
+      font-size: 1.2em;
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+
+    .vision.active {
+      opacity: 1;
+    }
+
+    /* Стили для фазы луны */
+    .moon-phase-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .moon {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle at 70px 100px, #f0e6d2 45px, transparent 46px);
+      border-radius: 50%;
+      position: relative;
+      margin: 20px 0;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    }
+
+    .moon-phase {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(to right, #1a0a33 50%, #4a2d82 50%);
+      clip-path: circle(50% at 50% 50%);
+      transition: all 1s ease;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.7) inset;
+    }
+
+    .moon-info {
+      text-align: left;
+      width: 100%;
+      max-width: 350px;
+      background: rgba(40, 20, 70, 0.5);
+      border: 1px solid #d4af37;
+      border-radius: 12px;
+      padding: 15px;
+    }
+
+    .moon-date {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.2);
+      border: 1px solid #d4af37;
+      border-radius: 20px;
+      padding: 5px 15px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .next-phase {
+      background: rgba(50, 30, 80, 0.5);
+      border: 1px solid #d4af37;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 15px;
+    }
+
+    /* Стили для значения имени */
+    .name-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .name-input {
+      width: 100%;
+      max-width: 300px;
+      padding: 12px;
+      background: rgba(50, 20, 80, 0.5);
+      border: 1px solid #d4af37;
+      border-radius: 8px;
+      color: #e0d4f7;
+      font-size: 1.1em;
+      margin-bottom: 15px;
+    }
+
+    .name-reveal {
+      width: 150px;
+      height: 150px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/name-scroll.jpg') no-repeat center center;
+      background-size: contain;
+      position: relative;
+      margin: 20px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .name-reveal:hover {
+      transform: scale(1.05);
+    }
+
+    .name-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 100px;
+      background: rgba(240, 230, 220, 0.9);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-size: 1.2em;
+      font-weight: bold;
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+
+    .name-content.active {
+      opacity: 1;
+    }
+
+    /* Стили для сонника */
+    .dream-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .dream-input {
+      width: 100%;
+      max-width: 300px;
+      padding: 12px;
+      background: rgba(50, 20, 80, 0.5);
+      border: 1px solid #d4af37;
+      border-radius: 8px;
+      color: #e0d4f7;
+      font-size: 1.1em;
+      margin-bottom: 15px;
+    }
+
+    .dream-pillow {
+      width: 200px;
+      height: 150px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/pillow.jpg') no-repeat center center;
+      background-size: contain;
+      position: relative;
+      margin: 20px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dream-pillow:hover {
+      transform: scale(1.05);
+    }
+
+    .dream-interpretation {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150px;
+      height: 100px;
+      background: rgba(240, 230, 220, 0.9);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-size: 1.1em;
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+
+    .dream-interpretation.active {
+      opacity: 1;
+    }
+
+    /* Стили для гадания бабы Маши */
+    .baba-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .baba-image {
+      width: 200px;
+      height: 250px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/baba.jpg') no-repeat center center;
+      background-size: contain;
+      border-radius: 10px;
+      margin: 20px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .baba-image:hover {
+      transform: scale(1.05);
+    }
+
+    .baba-tea {
+      display: flex;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .tea-cup {
+      width: 80px;
+      height: 100px;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/tea-cup.jpg') no-repeat center center;
+      background-size: contain;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .tea-cup:hover {
+      transform: rotate(5deg) scale(1.1);
+    }
+
+    .tea-reading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background: rgba(240, 230, 220, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-size: 0.9em;
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+
+    .tea-reading.active {
+      opacity: 1;
+    }
+
+    /* Стили для чайных листьев */
+    .tea-leaves {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    .tea-leaf {
+      position: absolute;
+      background: url('https://soul-code-tech.github.io/tarot/assets/images/tea-leaf.png') no-repeat center center;
+      background-size: contain;
+      opacity: 0;
+    }
+
+    /* Адаптация для мобильных устройств */
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px 10px;
+        border-radius: 16px;
+      }
+      
+      .three-cards-layout {
+        grid-template-columns: 1fr;
+      }
+      
+      .tarot-card {
+        width: 180px;
+        height: 260px;
+      }
+      
+      .wish-tree {
+        width: 200px;
+        height: 280px;
+      }
+      
+      .moon {
+        width: 160px;
+        height: 160px;
+      }
+      
+      .name-reveal, .dream-pillow {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .baba-image {
+        width: 160px;
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  
+  <div class="container">
+    <!-- Список гаданий -->
+    <div id="divination-list" class="divination-list active">
+      <h1>🔮 Мистические гадания</h1>
+      <p class="subtitle">Выберите вид гадания, и баба Маша поможет вам раскрыть тайны будущего</p>
+      
+      <div class="baba-message">
+        "Здравствуй, внучек! Сегодня я приготовила для тебя десять мистических гаданий. 
+        Выбирай то, что ближе душе, и я помогу тебе заглянуть в будущее. 
+        Помни: будущее не предопределено, оно зависит от твоих решений!"
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "А помните, как я вам говорила: 'Не суди по обложке, может, там внутри - счастье!'"
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('tarot-day')">
+        <div class="divination-title">Карта Таро дня</div>
+        <div class="divination-description">
+          Один простой расклад, который откроет вам послание Вселенной на сегодняшний день. 
+          Идеально для тех, кто хочет получить краткий, но точный совет.
+        </div>
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('three-cards')">
+        <div class="divination-title">Три карты Таро</div>
+        <div class="divination-description">
+          Классический расклад из трех карт, раскрывающий прошлое, настоящее и будущее. 
+          Поможет понять ситуацию в целом и найти правильное решение.
+        </div>
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('wish-tree')">
+        <div class="divination-title">Дерево желаний</div>
+        <div class="divination-description">
+          Загадайте желание и повесьте его на волшебное дерево. 
+          Баба Маша поможет определить, сбудется ли оно и когда.
+        </div>
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('fate-book')">
+        <div class="divination-title">Книга судеб</div>
+        <div class="divination-description">
+          Откройте страницу своей судьбы в древней книге. 
+          Узнайте, что приготовила для вас Вселенная и как изменить свою судьбу к лучшему.
+        </div>
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('runes')">
+        <div class="divination-title">Руны судьбы</div>
+        <div class="divination-description">
+          Бросьте руны на специальную доску и узнайте, что говорят древние символы о вашей судьбе. 
+          Каждая руна несет в себе мудрость предков.
+        </div>
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('fate-number')">
+        <div class="divination-title">Число судьбы</div>
+        <div class="divination-description">
+          Узнайте свое число судьбы по дате рождения и расшифруйте его значение. 
+          Это число откроет вам путь к самопознанию и успеху.
+        </div>
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('crystal-ball')">
+        <div class="divination-title">Гадание на шаре</div>
+        <div class="divination-description">
+          Посмотрите в кристальный шар и узнайте, что видит баба Маша в ваших будущих днях. 
+          Шар покажет вам скрытые истины и предупредит об опасностях.
+        </div>
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('baba-reading')">
+        <div class="divination-title">Гадание бабы Маши</div>
+        <div class="divination-description">
+          Баба Маша приготовила чай с особыми травами и готова погадать вам по листьям. 
+          Узнайте, что говорят чайные листья о вашей судьбе.
+        </div>
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('name-meaning')">
+        <div class="divination-title">Значение имени</div>
+        <div class="divination-description">
+          Узнайте тайный смысл вашего имени и как оно влияет на вашу судьбу. 
+          Каждая буква вашего имени несет в себе особую энергию.
+        </div>
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('dream-book')">
+        <div class="divination-title">Сонник</div>
+        <div class="divination-description">
+          Вспомните свой сон и узнайте его тайный смысл. 
+          Баба Маша расшифрует символы вашего сна и подскажет, к чему он может привести.
+        </div>
+      </div>
+      
+      <div class="divination-item" onclick="showDivination('moon-phase')">
+        <div class="divination-title">Фаза луны</div>
+        <div class="divination-description">
+          Узнайте текущую фазу луны и как она влияет на вашу жизнь. 
+          Лунный календарь поможет вам выбрать благоприятные дни для важных дел.
+        </div>
+      </div>
+    </div>
+    
+    <!-- Карта Таро дня -->
+    <div id="tarot-day" class="divination-section">
+      <h1>🃏 Карта Таро дня</h1>
+      <p class="subtitle">Нажми кнопку — и Вселенная откроет тебе своё послание</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Сегодня я предлагаю тебе выбрать одну карту Таро, 
+        которая расскажет, что приготовила для тебя Вселенная в этот день. 
+        Просто сосредоточься на своем вопросе и нажми кнопку!"
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Помни: карты не предсказывают судьбу, они лишь показывают возможные пути. 
+        Выбор всегда остается за тобой, внучек!"
+      </div>
+      
+      <div class="tarot-container">
+        <div class="tarot-card" id="tarot-day-card" onclick="flipTarotCard(this)">
+          <div class="tarot-card front">
+            <div style="color: white; font-size: 2em;">?</div>
+            <div style="color: white; margin-top: 10px;">Выбери карту</div>
+          </div>
+          <div class="tarot-card back">
+            <img src="https://soul-code-tech.github.io/tarot/assets/images/cards/back.jpg" alt="Карта Таро" class="tarot-card-image">
+          </div>
+        </div>
+        
+        <div class="tarot-title" id="tarot-day-title" style="display: none;">Маг</div>
+        <div class="tarot-meaning" id="tarot-day-meaning" style="display: none;">Сила, творчество, новые начинания</div>
+        
+        <div class="tarot-description" id="tarot-day-description" style="display: none;">
+          Сегодняшняя карта — Маг. Это знак того, что у вас есть все необходимые ресурсы для достижения ваших целей. 
+          Используйте свои таланты и умения, чтобы создать то, о чем вы мечтаете. 
+          Новые начинания будут успешными, особенно если вы действуете с уверенностью и ясным пониманием своих целей.
+        </div>
+        
+        <button class="btn-divination" id="get-tarot-day-btn" onclick="drawTarotDayCard()">
+          Получить карту
+        </button>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Карты Таро — это не просто гадание, внучек. Это зеркало твоей души и подсказка от Вселенной. 
+        Прислушайся к тому, что говорит тебе сегодняшняя карта, и ты найдешь ответы на свои вопросы."
+      </div>
+    </div>
+    
+    <!-- Три карты Таро -->
+    <div id="three-cards" class="divination-section">
+      <h1>🃏 Три карты Таро</h1>
+      <p class="subtitle">Прошлое, настоящее и будущее — три карты раскроют тайны вашей ситуации</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Сегодня я предлагаю тебе классический расклад из трех карт, 
+        который покажет тебе прошлое, настоящее и будущее твоей ситуации. 
+        Сосредоточься на своем вопросе и нажми кнопку, чтобы выбрать карты!"
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Помни: как сеешь, так и пожнешь. Прошлое формирует настоящее, 
+        а настоящее создает будущее. Будь мудр в своих выборах, внучек!"
+      </div>
+      
+      <div class="tarot-container">
+        <div class="three-cards-layout">
+          <div>
+            <div style="color: #d4af37; font-weight: bold; margin-bottom: 10px;">Прошлое</div>
+            <div class="tarot-card" id="three-cards-past" onclick="flipThreeCardsCard(this, 'past')">
+              <div class="tarot-card front">
+                <div style="color: white; font-size: 2em;">?</div>
+              </div>
+              <div class="tarot-card back">
+                <img src="https://soul-code-tech.github.io/tarot/assets/images/cards/back.jpg" alt="Карта Таро" class="tarot-card-image">
+              </div>
+            </div>
+            <div class="tarot-title" id="three-cards-past-title" style="display: none;">Жрица</div>
+            <div class="tarot-meaning" id="three-cards-past-meaning" style="display: none;">Мудрость, интуиция, тайны</div>
+          </div>
+          
+          <div>
+            <div style="color: #d4af37; font-weight: bold; margin-bottom: 10px;">Настоящее</div>
+            <div class="tarot-card" id="three-cards-present" onclick="flipThreeCardsCard(this, 'present')">
+              <div class="tarot-card front">
+                <div style="color: white; font-size: 2em;">?</div>
+              </div>
+              <div class="tarot-card back">
+                <img src="https://soul-code-tech.github.io/tarot/assets/images/cards/back.jpg" alt="Карта Таро" class="tarot-card-image">
+              </div>
+            </div>
+            <div class="tarot-title" id="three-cards-present-title" style="display: none;">Императрица</div>
+            <div class="tarot-meaning" id="three-cards-present-meaning" style="display: none;">Плодородие, изобилие, творчество</div>
+          </div>
+          
+          <div>
+            <div style="color: #d4af37; font-weight: bold; margin-bottom: 10px;">Будущее</div>
+            <div class="tarot-card" id="three-cards-future" onclick="flipThreeCardsCard(this, 'future')">
+              <div class="tarot-card front">
+                <div style="color: white; font-size: 2em;">?</div>
+              </div>
+              <div class="tarot-card back">
+                <img src="https://soul-code-tech.github.io/tarot/assets/images/cards/back.jpg" alt="Карта Таро" class="tarot-card-image">
+              </div>
+            </div>
+            <div class="tarot-title" id="three-cards-future-title" style="display: none;">Сила</div>
+            <div class="tarot-meaning" id="three-cards-future-meaning" style="display: none;">Самоконтроль, мужество, внутренняя сила</div>
+          </div>
+        </div>
+        
+        <div class="tarot-description" id="three-cards-description" style="display: none;">
+          <div class="result-title">Прошлое: Жрица</div>
+          <div class="result-text">
+            В вашем прошлом присутствовала важная информация или знание, которое вы не до конца осознавали. 
+            Возможно, вы игнорировали свою интуицию или не обращали внимания на важные знаки. 
+            Это время было периодом накопления внутренней мудрости, даже если вы этого не замечали.
+          </div>
+          
+          <div class="result-title" style="margin-top: 20px;">Настоящее: Императрица</div>
+          <div class="result-text">
+            Сейчас вы находитесь в периоде плодородия и изобилия. 
+            Ваши усилия начинают приносить плоды, и вы чувствуете себя уверенно. 
+            Это время для творчества, реализации идей и наслаждения достигнутым. 
+            Не бойтесь выражать свою творческую натуру — мир готов принять ваши идеи.
+          </div>
+          
+          <div class="result-title" style="margin-top: 20px;">Будущее: Сила</div>
+          <div class="result-text">
+            В будущем вас ждет период, когда ваша внутренняя сила и самоконтроль будут особенно важны. 
+            Вы сможете преодолеть любые препятствия с грацией и достоинством. 
+            Не позволяйте страхам управлять вами — ваша истинная сила находится внутри вас. 
+            Скоро вы поймете, что способны справиться с любыми вызовами.
+          </div>
+        </div>
+        
+        <button class="btn-divination" id="get-three-cards-btn" onclick="drawThreeCards()">
+          Получить три карты
+        </button>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Три карты показывают путь твоей ситуации, внучек. 
+        Прошлое формирует настоящее, а настоящее создает будущее. 
+        Прими мудрость прошлого, оцени настоящее и смело шагай в будущее!"
+      </div>
+    </div>
+    
+    <!-- Дерево желаний -->
+    <div id="wish-tree" class="divination-section">
+      <h1>🌳 Дерево желаний</h1>
+      <p class="subtitle">Загадайте желание и узнайте, сбудется ли оно</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Сегодня я приглашаю тебя к волшебному дереву желаний. 
+        Загадай желание, напиши его на листочке и повесь на ветку. 
+        Я посмотрю, сбудется ли оно и когда придет твой час."
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Желание, как семечко — посадишь в землю, поливай добрыми мыслями, 
+        и оно обязательно прорастет. Только не забывай, что дуб из желудя растет не за один день!"
+      </div>
+      
+      <div class="wish-tree-container">
+        <div class="wish-tree">
+          <div class="wish-leaf" style="top: 30%; left: 30%;"></div>
+          <div class="wish-leaf" style="top: 40%; left: 60%;"></div>
+          <div class="wish-leaf" style="top: 50%; left: 40%;"></div>
+          <div class="wish-leaf" style="top: 60%; left: 70%;"></div>
+          <div class="wish-leaf" style="top: 70%; left: 30%;"></div>
+        </div>
+        
+        <input type="text" class="wish-input" id="wish-input" placeholder="Напишите ваше желание...">
+        
+        <button class="btn-divination" onclick="makeWish()">
+          Загадать желание
+        </button>
+        
+        <div class="tarot-description" id="wish-description" style="display: none; margin-top: 20px;">
+          <div class="result-title">Ваше желание сбудется!</div>
+          <div class="result-text">
+            Баба Маша заглянула в волшебное дерево и увидела, что ваше желание обязательно сбудется. 
+            Силы природы уже работают над его исполнением. 
+            Однако помните, что некоторые желания требуют времени — как дерево растет не за один день.
+          </div>
+          
+          <div class="result-title" style="margin-top: 20px;">Срок исполнения</div>
+          <div class="result-text">
+            Ваше желание начнет сбываться в течение ближайших 3 месяцев. 
+            Первые признаки исполнения появятся уже через 3-4 недели. 
+            Не теряйте веру и продолжайте действовать в правильном направлении — 
+            Вселенная поддерживает вас в этом начинании.
+          </div>
+          
+          <div class="result-title" style="margin-top: 20px;">Совет от бабы Маши</div>
+          <div class="result-text">
+            Чтобы ускорить исполнение желания, каждый день представляйте, 
+            как оно уже сбылось. Чувствуйте радость и благодарность за то, 
+            что ваше желание уже стало реальностью. 
+            Поливайте свое желание позитивными мыслями и добрыми делами — 
+            тогда оно прорастет быстрее и принесет сладкие плоды.
+          </div>
+        </div>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Желание, как семечко, внучек — посадишь в землю, поливай добрыми мыслями, 
+        и оно обязательно прорастет. Только не забывай, что дуб из желудя растет не за один день! 
+        Будь терпелив, но не переставай верить в чудо."
+      </div>
+    </div>
+    
+    <!-- Книга судеб -->
+    <div id="fate-book" class="divination-section">
+      <h1>📖 Книга судеб</h1>
+      <p class="subtitle">Откройте страницу своей судьбы и узнайте будущее</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Перед тобой древняя Книга Судеб, в которой записана твоя судьба. 
+        Прикоснись к обложке, и я помогу тебе открыть нужную страницу. 
+        Но помни: судьбу можно изменить, если знать, как к ней подступиться!"
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Книга судьбы, как бабушкин пирог — чтобы узнать, вкусный ли он, нужно попробовать. 
+        Но сначала посмотри, из чего он сделан и как его готовили!"
+      </div>
+      
+      <div class="wish-tree-container">
+        <div class="fate-book">
+          <div class="book-cover">
+            Книга Судеб
+          </div>
+          <div class="book-pages" id="fate-book-pages" style="display: none;">
+            <h2 style="color: #d4af37; margin-bottom: 15px;">Ваша судьба</h2>
+            
+            <div class="result-text" style="margin-bottom: 20px;">
+              Баба Маша открыла Книгу Судеб и увидела, что перед тобой раскрываются новые горизонты. 
+              В ближайшее время ты столкнешься с важным выбором, который определит твой путь на годы вперед. 
+              Этот выбор связан с твоими талантами и призванием — прислушайся к внутреннему голосу.
+            </div>
+            
+            <div class="result-title" style="margin: 15px 0;">Твое предназначение</div>
+            <div class="result-text" style="margin-bottom: 20px;">
+              Твое предназначение — быть проводником света и мудрости для других. 
+              Ты обладаешь даром видеть то, что скрыто от других, и помогать людям находить свой путь. 
+              Не бойся проявлять этот дар — мир нуждается в таких, как ты.
+            </div>
+            
+            <div class="result-title" style="margin: 15px 0;">Препятствия на пути</div>
+            <div class="result-text" style="margin-bottom: 20px;">
+              На твоем пути будут встречаться сомнения и страхи, которые попытаются остановить тебя. 
+              Главное препятствие — твое собственное недоверие к себе. 
+              Помни: ты сильнее, чем думаешь, и у тебя есть все необходимое, чтобы преодолеть любые трудности.
+            </div>
+            
+            <div class="result-title" style="margin: 15px 0;">Совет от бабы Маши</div>
+            <div class="result-text">
+              Чтобы следовать своему предназначению, начни с малого. 
+              Каждый день делай хотя бы один шаг в правильном направлении. 
+              Не бойся ошибок — они учат нас мудрости. 
+              И помни: даже самая длинная дорога начинается с первого шага!
+            </div>
+          </div>
+        </div>
+        
+        <button class="btn-divination" id="open-book-btn" onclick="openFateBook()">
+          Открыть книгу
+        </button>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Книга судьбы, как бабушкин пирог, внучек — чтобы узнать, вкусный ли он, нужно попробовать. 
+        Но сначала посмотри, из чего он сделан и как его готовили! 
+        Помни: судьбу можно переписать, если знать, какие слова в ней зачеркнуть и что написать вместо них."
+      </div>
+    </div>
+    
+    <!-- Руны судьбы -->
+    <div id="runes" class="divination-section">
+      <h1>🪨 Руны судьбы</h1>
+      <p class="subtitle">Бросьте руны и узнайте, что говорят древние символы о вашей судьбе</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Сегодня я приготовила древние руны, которые хранят мудрость предков. 
+        Закрой глаза, сосредоточься на своем вопросе и брось руны на доску. 
+        Я расшифрую их послание и расскажу, что ждет тебя впереди."
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Руны, как грибы в лесу — чтобы найти хороший, нужно искать в правильном месте. 
+        И не забывай: иногда тот, что маленький, оказывается самым вкусным!"
+      </div>
+      
+      <div class="runes-container">
+        <div class="runes-board">
+          <div class="rune" id="rune-1" style="top: 40%; left: 30%;"></div>
+          <div class="rune" id="rune-2" style="top: 50%; left: 50%;"></div>
+          <div class="rune" id="rune-3" style="top: 40%; left: 70%;"></div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; margin-top: 10px; color: #d4af37; font-size: 0.9em;">
+          <div>Прошлое</div>
+          <div>Настоящее</div>
+          <div>Будущее</div>
+        </div>
+        
+        <div class="tarot-title" id="rune-past-title" style="display: none;">Феху</div>
+        <div class="tarot-meaning" id="rune-past-meaning" style="display: none;">Богатство, новые начинания, энергия</div>
+        
+        <div class="tarot-description" id="runes-description" style="display: none;">
+          <div class="result-title">Прошлое: Феху</div>
+          <div class="result-text">
+            В твоем прошлом были периоды активного роста и новых начинаний. 
+            Возможно, ты начал новый проект, получил неожиданную прибыль или встретил важного человека. 
+            Этот период дал тебе энергию и ресурсы, которые ты используешь сейчас. 
+            Однако помни: как огонь, богатство может согреть, а может и сжечь — важно уметь его направлять.
+          </div>
+          
+          <div class="result-title" style="margin-top: 20px;">Настоящее: Уруз</div>
+          <div class="result-text">
+            Сейчас ты находишься в периоде трансформации и силы. 
+            Как бык, ты обладаешь мощной энергией для преодоления препятствий. 
+            Этот период может быть непростым, но он укрепляет твою внутреннюю силу. 
+            Не бойся перемен — они делают тебя сильнее и мудрее.
+          </div>
+          
+          <div class="result-title" style="margin-top: 20px;">Будущее: Туриз</div>
+          <div class="result-text">
+            В будущем тебя ждут испытания, которые помогут раскрыть твой потенциал. 
+            Как бог грома Тор, ты столкнешься с вызовами, которые на первый взгляд кажутся непреодолимыми. 
+            Однако эти испытания откроют перед тобой новые возможности и помогут обрести внутреннюю силу. 
+            Помни: после грозы всегда приходит ясная погода.
+          </div>
+        </div>
+        
+        <button class="btn-divination" id="draw-runes-btn" onclick="drawRunes()">
+          Бросить руны
+        </button>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Руны, как грибы в лесу, внучек — чтобы найти хороший, нужно искать в правильном месте. 
+        И не забывай: иногда тот, что маленький, оказывается самым вкусным! 
+        Прислушайся к мудрости предков, но не забывай и свой ум включать."
+      </div>
+    </div>
+    
+    <!-- Число судьбы -->
+    <div id="fate-number" class="divination-section">
+      <h1>🔢 Число судьбы</h1>
+      <p class="subtitle">Узнайте свое число судьбы и его значение</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Сегодня я помогу тебе рассчитать твое число судьбы по дате рождения. 
+        Это число откроет тебе путь к самопознанию и покажет, как использовать свои сильные стороны. 
+        Просто введи дату своего рождения, и я сделаю расчет!"
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Число судьбы, как пирожок с картошкой — чтобы узнать, вкусный ли он, нужно попробовать. 
+        Но сначала посмотри, как он завернут и откуда взят!"
+      </div>
+      
+      <div class="name-container">
+        <div style="margin-bottom: 20px; text-align: left; width: 100%; max-width: 300px;">
+          <label for="birth-date" style="display: block; color: #d4af37; font-weight: bold; margin-bottom: 8px; font-size: 1.1em;">
+            Дата рождения:
+          </label>
+          <input type="date" id="birth-date" class="name-input" value="2025-08-14">
+        </div>
+        
+        <div style="display: flex; flex-direction: column; align-items: center;">
+          <div style="width: 150px; height: 150px; background: url('https://soul-code-tech.github.io/tarot/assets/images/number-scroll.jpg') no-repeat center center; background-size: contain; position: relative; margin: 20px 0;">
+            <div id="fate-number-display" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; background: rgba(240, 230, 220, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #333; font-size: 2.5em; font-weight: bold; opacity: 0;">
+              7
+            </div>
+          </div>
+          
+          <div class="result-title" id="fate-number-title" style="display: none; margin-top: 10px;">Число мудрости и познания</div>
+        </div>
+        
+        <button class="btn-divination" onclick="calculateFateNumber()">
+          Рассчитать число
+        </button>
+        
+        <div class="tarot-description" id="fate-number-description" style="display: none; margin-top: 20px;">
+          <div class="result-text" style="margin-bottom: 20px;">
+            Твое число судьбы — 7. Это число мудрости, познания и внутренней силы. 
+            Ты пришел в этот мир, чтобы искать истину и делиться своими знаниями с другими. 
+            Твоя душа стремится к глубокому пониманию жизни и ее тайн.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Сильные стороны</div>
+          <div class="result-text" style="margin-bottom: 20px;">
+            Ты обладаешь аналитическим умом и способностью видеть то, что скрыто от других. 
+            Ты умеешь глубоко размышлять и находить решения сложных проблем. 
+            Твоя интуиция развита сильнее, чем у большинства людей, и часто подсказывает тебе правильный путь.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Слабые стороны</div>
+          <div class="result-text" style="margin-bottom: 20px;">
+            Иногда ты можешь быть слишком замкнутым и склонным к чрезмерному анализу. 
+            Ты можешь уходить в себя, избегая общения с другими, что мешает тебе находить поддержку, когда она нужна. 
+            Помни: даже самый мудрый человек нуждается в друзьях.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Совет от бабы Маши</div>
+          <div class="result-text">
+            Чтобы раскрыть свой потенциал, найди баланс между разумом и сердцем. 
+            Не бойся делиться своими знаниями с другими — это умножает мудрость. 
+            И помни: истинное знание приходит не только из книг, но и из общения с людьми. 
+            Иногда самый простой человек может научить тебя чему-то важному.
+          </div>
+        </div>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Число судьбы, как пирожок с картошкой, внучек — чтобы узнать, вкусный ли он, нужно попробовать. 
+        Но сначала посмотри, как он завернут и откуда взят! 
+        Помни: число судьбы — это не приговор, а дорога, которую ты можешь проложить сам."
+      </div>
+    </div>
+    
+    <!-- Гадание на шаре -->
+    <div id="crystal-ball" class="divination-section">
+      <h1>🔮 Гадание на шаре</h1>
+      <p class="subtitle">Посмотрите в кристальный шар и узнайте будущее</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Сегодня я приглашаю тебя заглянуть в кристальный шар. 
+        Сосредоточься на своем вопросе, посмотри в глубину шара и расскажи, 
+        что ты видишь. Я помогу расшифровать видение и расскажу, что оно означает."
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Кристальный шар, как чайник — чтобы он говорил, нужно в нем тепло и уважение. 
+        Не смотри в шар с пустой головой, а то увидишь только свое отражение!"
+      </div>
+      
+      <div class="crystal-ball-container">
+        <div class="crystal-ball" id="crystal-ball-element" onclick="lookIntoCrystalBall()">
+          <div class="vision" id="crystal-vision">
+            Что вы видите?
+          </div>
+        </div>
+        
+        <div class="tarot-description" id="crystal-ball-description" style="display: none; margin-top: 20px;">
+          <div class="result-title">Твое видение</div>
+          <div class="result-text" style="margin-bottom: 20px;" id="crystal-result">
+            В кристальном шаре ты увидел(а) реку, текущую сквозь густой лес. 
+            На берегу реки стоит старый дуб, а под ним — маленький домик с дымком. 
+            Над рекой парит орел, а вдалеке виднеются горы.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Расшифровка видения</div>
+          <div class="result-text" style="margin-bottom: 20px;" id="crystal-symbolism">
+            Река символизирует поток твоей жизни и ее неизбежные изменения. 
+            Густой лес — это период неопределенности и поиска, через который ты проходишь. 
+            Старый дуб под домиком с дымком говорит о том, что впереди тебя ждет стабильность и уют. 
+            Орел над рекой указывает на высокую перспективу и ясное видение твоей цели. 
+            Горы вдалеке — это вызовы, которые ждут тебя, но они не непреодолимы.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Совет от бабы Маши</div>
+          <div class="result-text" id="crystal-advice">
+            Сейчас ты находишься в периоде поиска и неопределенности, но не теряй веры. 
+            Поток жизни несет тебя к стабильности и уюту, который ты так ищешь. 
+            Сохраняй высокую перспективу, как орел, и не бойся горных вершин — 
+            каждая из них откроет тебе новый горизонт. 
+            Помни: даже самая длинная река когда-нибудь впадает в море.
+          </div>
+        </div>
+        
+        <button class="btn-divination" id="crystal-ball-btn" onclick="lookIntoCrystalBall()" style="display: none;">
+          Посмотреть еще раз
+        </button>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Кристальный шар, как чайник, внучек — чтобы он говорил, нужно в нем тепло и уважение. 
+        Не смотри в шар с пустой головой, а то увидишь только свое отражение! 
+        Помни: будущее не предопределено, оно зависит от твоих решений сегодня."
+      </div>
+    </div>
+    
+    <!-- Гадание бабы Маши -->
+    <div id="baba-reading" class="divination-section">
+      <h1>👵 Гадание бабы Маши</h1>
+      <p class="subtitle">Баба Маша погадает вам по чайным листьям</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Сегодня я приготовила особый чай с травами и готова погадать тебе по листьям. 
+        Выпей чай, оставив немного на дне, переверни чашку и дай ей остыть. 
+        Потом я посмотрю на узор из листьев и расскажу, что он означает."
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Чайные листья, как грибы после дождя — одни сулят богатство, другие предупреждают об опасности. 
+        Главное — не перепутать, какие к какому сну!"
+      </div>
+      
+      <div class="baba-container">
+        <div class="baba-image"></div>
+        
+        <div class="tea-cup-container" style="position: relative; width: 80px; height: 100px; margin: 20px auto;">
+          <div class="tea-cup" style="position: absolute; width: 100%; height: 100%; background: url('https://soul-code-tech.github.io/tarot/assets/images/tea-cup.jpg') no-repeat center center; background-size: contain;"></div>
+          <div class="tea-leaves" id="tea-leaves-container"></div>
+        </div>
+        
+        <div class="baba-tea" style="display: none;">
+          <div class="tea-cup" onclick="readTeaLeaves(1)">
+            <div class="tea-reading" id="tea-reading-1">?</div>
+          </div>
+          <div class="tea-cup" onclick="readTeaLeaves(2)">
+            <div class="tea-reading" id="tea-reading-2">?</div>
+          </div>
+          <div class="tea-cup" onclick="readTeaLeaves(3)">
+            <div class="tea-reading" id="tea-reading-3">?</div>
+          </div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; margin-top: 10px; color: #d4af37; font-size: 0.9em; width: 100%; max-width: 300px; display: none;">
+          <div>Любовь</div>
+          <div>Карьера</div>
+          <div>Здоровье</div>
+        </div>
+        
+        <div class="tarot-description" id="baba-reading-description" style="display: none; margin-top: 20px;">
+          <div class="result-title">Любовь: Сердце</div>
+          <div class="result-text" style="margin-bottom: 20px;">
+            В твоей любовной жизни скоро произойдет важное событие. 
+            Если ты одинок(а), то встретишь человека, который займет твое сердце. 
+            Если отношения уже есть, то они перейдут на новый уровень близости и доверия. 
+            Не бойся открывать свое сердце — любовь приходит к тем, кто готов ее принять.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Карьера: Лестница</div>
+          <div class="result-text" style="margin-bottom: 20px;">
+            В профессиональной сфере тебя ждет восхождение. 
+            Ты получишь возможность подняться по карьерной лестнице или начать новый проект, 
+            который принесет признание и успех. 
+            Не упускай шанс, даже если путь покажется сложным — каждая ступенька приближает тебя к вершине.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Здоровье: Цветок</div>
+          <div class="result-text">
+            Твое здоровье в хорошем состоянии, но не забывай о профилактике. 
+            Цветок в чайных листьях говорит о том, что твоему организму нужен отдых и восстановление. 
+            Удели больше внимания сну и правильному питанию. 
+            Помни: здоровье — это цветок, который нужно поливать каждый день.
+          </div>
+        </div>
+        
+        <button class="btn-divination" id="baba-reading-btn" onclick="startBabaReading()">
+          Приступить к гаданию
+        </button>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Чайные листья, как грибы после дождя, внучек — одни сулят богатство, другие предупреждают об опасности. 
+        Главное — не перепутать, какие к какому сну! 
+        Помни: чай не только гадает, но и лечит — пей с удовольствием и верой в хорошее!"
+      </div>
+    </div>
+    
+    <!-- Значение имени -->
+    <div id="name-meaning" class="divination-section">
+      <h1>🔤 Значение имени</h1>
+      <p class="subtitle">Узнайте тайный смысл вашего имени и его влияние на судьбу</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Сегодня я раскрою тебе тайный смысл твоего имени. 
+        Каждая буква несет в себе особую энергию, которая влияет на твою судьбу. 
+        Просто напиши свое имя, и я расскажу, как оно формирует твою жизнь."
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Имя, как пирог — чтобы узнать, вкусный ли он, нужно попробовать. 
+        Но сначала посмотри, как он завернут и кто его испек!"
+      </div>
+      
+      <div class="name-container">
+        <input type="text" class="name-input" id="name-input" placeholder="Введите ваше имя...">
+        
+        <div class="name-reveal" id="name-reveal" onclick="revealNameMeaning()">
+          <div class="name-content" id="name-content">
+            А
+          </div>
+        </div>
+        
+        <button class="btn-divination" onclick="revealNameMeaning()">
+          Узнать значение
+        </button>
+        
+        <div class="tarot-description" id="name-description" style="display: none; margin-top: 20px;">
+          <div class="result-title">Значение вашего имени</div>
+          <div class="result-text" style="margin-bottom: 20px;" id="name-result">
+            Твое имя начинается с буквы А, которая символизирует начало, лидерство и независимость. 
+            Ты пришел в этот мир с сильной волей и стремлением к самовыражению. 
+            Ты обладаешь энергичной натурой и способностью брать на себя ответственность.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Влияние на характер</div>
+          <div class="result-text" style="margin-bottom: 20px;" id="name-character">
+            Твое имя наделяет тебя смелостью и решительностью. 
+            Ты не боишься брать на себя инициативу и идти первым там, где другие колеблются. 
+            Ты обладаешь сильной индивидуальностью и способностью вдохновлять других. 
+            Однако иногда твоя решительность может проявляться как упрямство — следи за этим.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Влияние на судьбу</div>
+          <div class="result-text" style="margin-bottom: 20px;" id="name-fate">
+            Твое имя указывает на путь лидера и новатора. 
+            Ты призван(а) создавать что-то новое и вести за собой других. 
+            Твоя судьба связана с преодолением препятствий и достижением амбициозных целей. 
+            Не бойся брать на себя ответственность — это твой путь к самореализации.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Совет от бабы Маши</div>
+          <div class="result-text" id="name-advice">
+            Чтобы раскрыть потенциал своего имени, развивай свои лидерские качества, 
+            но не забывай о важности сотрудничества. 
+            Иногда лучше идти вместе с другими, чем один, даже если ты впереди. 
+            Помни: сильное дерево растет не в одиночку, а в лесу с другими деревьями.
+          </div>
+        </div>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Имя, как пирог, внучек — чтобы узнать, вкусный ли он, нужно попробовать. 
+        Но сначала посмотри, как он завернут и кто его испек! 
+        Помни: имя — это не только то, как тебя зовут, но и то, кем ты становишься."
+      </div>
+    </div>
+    
+    <!-- Сонник -->
+    <div id="dream-book" class="divination-section">
+      <h1>💤 Сонник</h1>
+      <p class="subtitle">Вспомните свой сон и узнайте его тайный смысл</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Сегодня я помогу тебе расшифровать тайный смысл твоего сна. 
+        Вспомни, что ты видел(а) во сне, и я расскажу, к чему это может привести. 
+        Сны — это послания из глубин твоей души, которые стоит прислушаться."
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Сон, как капустный пирог — чтобы понять, вкусный ли он, нужно попробовать. 
+        Но сначала посмотри, из чего он сделан и как его готовили!"
+      </div>
+      
+      <div class="dream-container">
+        <input type="text" class="dream-input" id="dream-input" placeholder="Опишите ваш сон...">
+        
+        <div class="dream-pillow" id="dream-pillow" onclick="interpretDream()">
+          <div class="dream-interpretation" id="dream-interpretation">
+            ?
+          </div>
+        </div>
+        
+        <button class="btn-divination" onclick="interpretDream()">
+          Расшифровать сон
+        </button>
+        
+        <div class="tarot-description" id="dream-description" style="display: none; margin-top: 20px;">
+          <div class="result-title">Толкование вашего сна</div>
+          <div class="result-text" style="margin-bottom: 20px;" id="dream-result">
+            Ты видел(а) сон, в котором бежал(а) по лесу, пытаясь найти дорогу домой. 
+            Вокруг были высокие деревья, и ты чувствовал(а) тревогу, но в конце концов нашел(ла) светлую поляну.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Символика сна</div>
+          <div class="result-text" style="margin-bottom: 20px;" id="dream-symbolism">
+            Лес символизирует период неопределенности в твоей жизни, когда ты чувствуешь себя потерянным(ной). 
+            Бег по лесу говорит о том, что ты активно ищешь выход из сложной ситуации. 
+            Тревога отражает твои текущие переживания и страхи. 
+            Светлая поляна в конце пути указывает на то, что решение найдется, и ты обретешь ясность.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Что ожидать в ближайшее время</div>
+          <div class="result-text" style="margin-bottom: 20px;" id="dream-prediction">
+            В ближайшие недели ты найдешь решение, которое давно искал(а). 
+            Это может быть связано с работой, отношениями или личным развитием. 
+            Не бойся трудностей на пути — они учат тебя мудрости и стойкости. 
+            Помни: даже самый темный лес имеет выход.
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Совет от бабы Маши</div>
+          <div class="result-text" id="dream-advice">
+            Когда чувствуешь себя потерянным(ной), сделай глубокий вдох и остановись на мгновение. 
+            Прислушайся к своей интуиции — она покажет тебе верный путь. 
+            Не бойся просить помощи у близких — иногда взгляд со стороны помогает увидеть то, 
+            что скрыто от тебя самого(самой). Помни: каждый лес можно пройти, если знать, куда идти.
+          </div>
+        </div>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Сон, как капустный пирог, внучек — чтобы понять, вкусный ли он, нужно попробовать. 
+        Но сначала посмотри, из чего он сделан и как его готовили! 
+        Помни: сны — это не просто картинки, а подсказки от твоей души."
+      </div>
+    </div>
+    
+    <!-- Фаза луны -->
+    <div id="moon-phase" class="divination-section">
+      <h1>🌙 Фаза луны</h1>
+      <p class="subtitle">Узнайте текущую фазу луны и ее влияние на вашу жизнь</p>
+      
+      <div class="baba-message">
+        "Дорогой внучек! Сегодня я расскажу тебе о текущей фазе луны и как она влияет на твою жизнь. 
+        Луна — великий регулятор энергий, и знание ее фазы поможет тебе выбрать благоприятные дни для важных дел. 
+        Посмотри на небо, и я объясню, что Луна хочет тебе сказать."
+      </div>
+      
+      <div class="baba-humor" style="margin: 15px 0;">
+        "Луна, как капустный пирог — у нее тоже бывают подгоревшие края. 
+        Но даже в убывающей луне можно найти что-то хорошее, если знать, где искать!"
+      </div>
+      
+      <div class="moon-phase-container">
+        <div class="moon-date">Сегодня: 14 августа 2025 г.</div>
+        
+        <div class="moon">
+          <div class="moon-phase" id="moon-phase-element" style="clip-path: circle(50% at 25% 50%);"></div>
+        </div>
+        
+        <div class="moon-info">
+          <div class="result-title">Растущая Луна</div>
+          <div class="result-text" style="margin-bottom: 15px; font-weight: bold;">
+            12-я лунный день • 65% освещенности
+          </div>
+          
+          <div class="result-text" style="margin-bottom: 20px;">
+            Сейчас Луна находится в фазе роста. Это время для новых начинаний, роста и развития. 
+            Энергия Луны поддерживает все, что связано с созданием, ростом и укреплением. 
+            Идеальное время для старта новых проектов, укрепления отношений и достижения целей.
+          </div>
+          
+          <div class="next-phase">
+            <div class="result-title" style="margin-bottom: 10px;">Следующая фаза: Полнолуние</div>
+            <div class="result-text">
+              Дата: 22 августа 2025 г.<br>
+              Рекомендации: Время для завершения начатых проектов и подведения итогов. 
+              Энергия Луны поможет вам увидеть результаты ваших усилий и принять важные решения.
+            </div>
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Благоприятные дела</div>
+          <div class="result-text" style="margin-bottom: 20px;">
+            • Начинайте новые проекты и дела<br>
+            • Заключайте договоры и финансовые сделки<br>
+            • Укрепляйте отношения и знакомьтесь с новыми людьми<br>
+            • Начинайте курсы обучения и саморазвитие<br>
+            • Сажайте растения и ухаживайте за садом
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Неблагоприятные дела</div>
+          <div class="result-text" style="margin-bottom: 20px;">
+            • Не начинайте серьезные медицинские процедуры<br>
+            • Избегайте расставаний и конфликтов<br>
+            • Не стоит брать крупные кредиты<br>
+            • Не рекомендуется делать татуировки и пирсинг
+          </div>
+          
+          <div class="result-title" style="margin: 15px 0;">Совет от бабы Маши</div>
+          <div class="result-text">
+            Используй энергию растущей Луны для движения вперед. 
+            Каждый день записывай свои достижения — это усилит позитивный эффект. 
+            Заведи специальный дневник для новых начинаний и отмечай в нем прогресс. 
+            Помни: как Луна растет день за днем, так и твои дела будут прибавлять силу и яркость.
+          </div>
+        </div>
+        
+        <button class="btn-divination" onclick="updateMoonPhase()">
+          Обновить фазу
+        </button>
+      </div>
+      
+      <div class="baba-message" style="margin-top: 20px;">
+        "Луна, как капустный пирог, внучек — у нее тоже бывают подгоревшие края. 
+        Но даже в убывающей луне можно найти что-то хорошее, если знать, где искать! 
+        Помни: как Луна меняет свои фазы, так и жизнь приносит разные времена — цени каждое из них."
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <a href="#" class="btn-back" onclick="goBack()" style="display: none;">⬅️ Назад</a>
+      <a href="index.html" class="btn-home">🏠 Главное меню</a>
+    </div>
+  </div>
+
+  <script>
+    // Создаем мерцающие звезды
+    function createStars() {
+      const starsContainer = document.getElementById('stars');
+      const starCount = 80;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // Случайные параметры для звезд
+        const size = Math.random() * 2.5;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const delay = Math.random() * 4;
+        const duration = 2 + Math.random() * 4;
+        
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${posX}%`;
+        star.style.top = `${posY}%`;
+        star.style.animationDelay = `${delay}s`;
+        star.style.animationDuration = `${duration}s`;
+        
+        starsContainer.appendChild(star);
+      }
+    }
+    
+    // Текущая секция
+    let currentSection = 'divination-list';
+    
+    // Список всех гаданий
+    const divinations = [
+      'tarot-day', 'three-cards', 'wish-tree', 'fate-book', 'runes',
+      'fate-number', 'crystal-ball', 'baba-reading', 'name-meaning', 'dream-book', 'moon-phase'
+    ];
+    
+    // Функция для отображения секции гадания
+    function showDivination(divinationId) {
+      // Скрываем все секции
+      document.querySelectorAll('.divination-section').forEach(el => {
+        el.style.display = 'none';
+      });
+      
+      // Показываем выбранную секцию
+      document.getElementById(divinationId).style.display = 'block';
+      
+      // Скрываем список гаданий
+      document.getElementById('divination-list').style.display = 'none';
+      
+      // Обновляем текущую секцию
+      currentSection = divinationId;
+      
+      // Показываем кнопку "Назад"
+      document.querySelector('.btn-back').style.display = 'inline-block';
+    }
+    
+    // Функция для возврата назад
+    function goBack() {
+      if (currentSection === 'divination-list') {
+        window.location.href = 'index.html';
+      } else {
+        // Скрываем текущую секцию
+        document.getElementById(currentSection).style.display = 'none';
+        
+        // Показываем список гаданий
+        document.getElementById('divination-list').style.display = 'block';
+        
+        // Обновляем текущую секцию
+        currentSection = 'divination-list';
+        
+        // Скрываем кнопку "Назад", если вернулись к списку гаданий
+        document.querySelector('.btn-back').style.display = 'none';
+      }
+    }
+    
+    // Функции для гадания на Таро дня
+    function drawTarotDayCard() {
+      const card = document.getElementById('tarot-day-card');
+      const getBtn = document.getElementById('get-tarot-day-btn');
+      
+      // Сбрасываем анимацию
+      card.style.transform = 'rotateY(0deg)';
+      
+      // Анимация переворота карты
+      setTimeout(() => {
+        card.style.transform = 'rotateY(180deg)';
+        
+        // Показываем результаты
+        setTimeout(() => {
+          document.getElementById('tarot-day-title').style.display = 'block';
+          document.getElementById('tarot-day-meaning').style.display = 'block';
+          document.getElementById('tarot-day-description').style.display = 'block';
+        }, 500);
+      }, 100);
+      
+      getBtn.textContent = 'Получить другую карту';
+    }
+    
+    function flipTarotCard(cardElement) {
+      if (cardElement.style.transform === 'rotateY(180deg)') {
+        cardElement.style.transform = 'rotateY(0deg)';
+      } else {
+        cardElement.style.transform = 'rotateY(180deg)';
+      }
+    }
+    
+    // Функции для гадания на три карты
+    function drawThreeCards() {
+      const cards = [
+        document.getElementById('three-cards-past'),
+        document.getElementById('three-cards-present'),
+        document.getElementById('three-cards-future')
+      ];
+      const getBtn = document.getElementById('get-three-cards-btn');
+      
+      // Сбрасываем анимацию
+      cards.forEach(card => {
+        card.style.transform = 'rotateY(0deg)';
+      });
+      
+      // Анимация переворота карт
+      setTimeout(() => {
+        cards.forEach((card, index) => {
+          setTimeout(() => {
+            card.style.transform = 'rotateY(180deg)';
+          }, index * 500);
+        });
+        
+        // Показываем результаты
+        setTimeout(() => {
+          document.getElementById('three-cards-past-title').style.display = 'block';
+          document.getElementById('three-cards-past-meaning').style.display = 'block';
+          document.getElementById('three-cards-present-title').style.display = 'block';
+          document.getElementById('three-cards-present-meaning').style.display = 'block';
+          document.getElementById('three-cards-future-title').style.display = 'block';
+          document.getElementById('three-cards-future-meaning').style.display = 'block';
+          document.getElementById('three-cards-description').style.display = 'block';
+        }, 1500);
+      }, 100);
+      
+      getBtn.textContent = 'Начать заново';
+    }
+    
+    function flipThreeCardsCard(cardElement, position) {
+      if (cardElement.style.transform === 'rotateY(180deg)') {
+        cardElement.style.transform = 'rotateY(0deg)';
+      } else {
+        cardElement.style.transform = 'rotateY(180deg)';
+      }
+    }
+    
+    // Функции для дерева желаний
+    function makeWish() {
+      const wishInput = document.getElementById('wish-input');
+      const wishText = wishInput.value.trim();
+      
+      if (!wishText) {
+        alert('Пожалуйста, напишите ваше желание');
+        return;
+      }
+      
+      // Сбрасываем анимацию
+      const leaves = document.querySelectorAll('.wish-leaf');
+      leaves.forEach(leaf => {
+        leaf.classList.remove('visible');
+      });
+      
+      // Анимация листьев
+      setTimeout(() => {
+        leaves.forEach((leaf, index) => {
+          setTimeout(() => {
+            leaf.classList.add('visible');
+          }, index * 300);
+        });
+      }, 100);
+      
+      // Показываем результаты
+      setTimeout(() => {
+        document.getElementById('wish-description').style.display = 'block';
+      }, 1000);
+    }
+    
+    // Функции для книги судеб
+    function openFateBook() {
+      const bookCover = document.querySelector('.book-cover');
+      const bookPages = document.getElementById('fate-book-pages');
+      const openBtn = document.getElementById('open-book-btn');
+      
+      // Сбрасываем анимацию
+      bookCover.style.transform = 'rotateY(0deg)';
+      
+      // Анимация открытия книги
+      setTimeout(() => {
+        bookCover.style.transform = 'rotateY(180deg)';
+        
+        // Показываем страницы
+        setTimeout(() => {
+          bookPages.style.display = 'block';
+          openBtn.textContent = 'Закрыть книгу';
+        }, 500);
+      }, 100);
+    }
+    
+    // Функции для рун судьбы
+    function drawRunes() {
+      const runes = [
+        document.getElementById('rune-1'),
+        document.getElementById('rune-2'),
+        document.getElementById('rune-3')
+      ];
+      const drawBtn = document.getElementById('draw-runes-btn');
+      
+      // Сбрасываем анимацию
+      runes.forEach(rune => {
+        rune.classList.remove('flipped');
+      });
+      
+      // Анимация броска рун
+      setTimeout(() => {
+        runes.forEach((rune, index) => {
+          setTimeout(() => {
+            rune.classList.add('flipped');
+          }, index * 500);
+        });
+        
+        // Показываем результаты
+        setTimeout(() => {
+          document.getElementById('rune-past-title').style.display = 'block';
+          document.getElementById('rune-past-meaning').style.display = 'block';
+          document.getElementById('runes-description').style.display = 'block';
+        }, 1500);
+      }, 100);
+      
+      drawBtn.textContent = 'Бросить снова';
+    }
+    
+    // Функции для числа судьбы
+    function calculateFateNumber() {
+      const birthDateInput = document.getElementById('birth-date');
+      const birthDate = birthDateInput.value;
+      
+      if (!birthDate) {
+        alert('Пожалуйста, выберите дату рождения');
+        return;
+      }
+      
+      // Сбрасываем анимацию
+      const numberDisplay = document.getElementById('fate-number-display');
+      numberDisplay.style.opacity = '0';
+      
+      // Анимация раскрытия числа
+      setTimeout(() => {
+        numberDisplay.style.opacity = '1';
+        
+        // Показываем результаты
+        setTimeout(() => {
+          document.getElementById('fate-number-title').style.display = 'block';
+          document.getElementById('fate-number-description').style.display = 'block';
+        }, 500);
+      }, 100);
+    }
+    
+    // Функции для гадания на шаре
+    function lookIntoCrystalBall() {
+      const crystalBall = document.getElementById('crystal-ball-element');
+      const crystalVision = document.getElementById('crystal-vision');
+      const description = document.getElementById('crystal-ball-description');
+      const btn = document.getElementById('crystal-ball-btn');
+      
+      // Сбрасываем анимацию
+      crystalBall.style.transform = 'scale(1)';
+      crystalVision.classList.remove('active');
+      crystalVision.innerHTML = 'Что вы видите?';
+      
+      // Анимация шара
+      setTimeout(() => {
+        crystalBall.style.transform = 'scale(1.1)';
+        
+        setTimeout(() => {
+          crystalBall.style.transform = 'scale(1.05)';
+          
+          // Анимация появления видения
+          setTimeout(() => {
+            const dreams = [
+              {
+                result: "Ты видел(а) реку, текущую сквозь густой лес. На берегу реки стоит старый дуб, а под ним — маленький домик с дымком.",
+                symbolism: "Река символизирует поток твоей жизни и ее неизбежные изменения. Густой лес — это период неопределенности и поиска, через который ты проходишь.",
+                advice: "Сейчас ты находишься в периоде поиска и неопределенности, но не теряй веры. Поток жизни несет тебя к стабильности и уюту, который ты так ищешь."
+              },
+              {
+                result: "Ты увидел(а) высокую гору, на вершине которой светит яркая звезда. Тропинка к горе извивается между цветущими деревьями.",
+                symbolism: "Гора символизирует цель, к которой ты стремишься. Яркая звезда — это твоя мечта и ориентир. Цветущие деревья по пути говорят о том, что путь к цели будет наполнен радостью.",
+                advice: "Не бойся высоких гор — каждая ступенька приближает тебя к вершине. Наслаждайся каждым моментом пути, а не только достижением цели."
+              },
+              {
+                result: "В шаре ты увидел(а) старый дуб, под которым сидит мудрец. Рядом с ним лежит раскрытая книга, а в воздухе парят светящиеся шары.",
+                symbolism: "Старый дуб символизирует мудрость и стабильность. Мудрец — это твоя внутренняя интуиция. Светящиеся шары говорят о новых идеях и вдохновении.",
+                advice: "Прислушивайся к своей интуиции — она знает путь лучше, чем разум. Доверяй своим внутренним ощущениям, особенно когда перед тобой стоит важный выбор."
+              }
+            ];
+            
+            const randomIndex = Math.floor(Math.random() * dreams.length);
+            const dream = dreams[randomIndex];
+            
+            document.getElementById('crystal-result').textContent = dream.result;
+            document.getElementById('crystal-symbolism').textContent = dream.symbolism;
+            document.getElementById('crystal-advice').textContent = dream.advice;
+            
+            crystalVision.innerHTML = dream.result.split('.')[0];
+            crystalVision.classList.add('active');
+            
+            // Показываем результаты
+            description.style.display = 'block';
+            btn.style.display = 'block';
+          }, 1000);
+        }, 500);
+      }, 100);
+    }
+    
+    // Функции для гадания бабы Маши
+    function startBabaReading() {
+      const btn = document.getElementById('baba-reading-btn');
+      const teaLeavesContainer = document.getElementById('tea-leaves-container');
+      
+      // Очищаем предыдущие листья
+      teaLeavesContainer.innerHTML = '';
+      
+      // Сбрасываем анимацию
+      btn.textContent = 'Приступить к гаданию';
+      
+      // Анимация начала гадания
+      setTimeout(() => {
+        btn.textContent = 'Завершить гадание';
+        
+        // Создаем анимацию чайных листьев
+        setTimeout(() => {
+          createTeaLeavesPattern();
+        }, 500);
+      }, 100);
+    }
+    
+    function createTeaLeavesPattern() {
+      const teaLeavesContainer = document.getElementById('tea-leaves-container');
+      const cupWidth = 80;
+      const cupHeight = 100;
+      
+      // Очищаем предыдущие листья
+      teaLeavesContainer.innerHTML = '';
+      
+      // Создаем случайное количество листьев (от 5 до 10)
+      const leafCount = 5 + Math.floor(Math.random() * 6);
+      
+      for (let i = 0; i < leafCount; i++) {
+        const leaf = document.createElement('div');
+        leaf.classList.add('tea-leaf');
+        
+        // Случайные параметры для листа
+        const size = 15 + Math.random() * 10;
+        const posX = 20 + Math.random() * 60;
+        const posY = 20 + Math.random() * 60;
+        const rotation = Math.random() * 360;
+        
+        leaf.style.width = `${size}px`;
+        leaf.style.height = `${size}px`;
+        leaf.style.left = `${posX}%`;
+        leaf.style.top = `${posY}%`;
+        leaf.style.transform = `rotate(${rotation}deg)`;
+        
+        // Добавляем с задержкой для анимации
+        setTimeout(() => {
+          leaf.style.opacity = '1';
+        }, i * 100);
+        
+        teaLeavesContainer.appendChild(leaf);
+      }
+      
+      // Через некоторое время показываем результат
+      setTimeout(() => {
+        showBabaReadingResult();
+      }, 1500);
+    }
+    
+    function showBabaReadingResult() {
+      const btn = document.getElementById('baba-reading-btn');
+      btn.textContent = 'Начать заново';
+      
+      // Показываем результаты
+      document.getElementById('baba-reading-description').style.display = 'block';
+    }
+    
+    // Функции для значения имени
+    function revealNameMeaning() {
+      const nameInput = document.getElementById('name-input');
+      const nameText = nameInput.value.trim();
+      
+      if (!nameText) {
+        alert('Пожалуйста, введите ваше имя');
+        return;
+      }
+      
+      const nameContent = document.getElementById('name-content');
+      
+      // Сбрасываем анимацию
+      nameContent.style.opacity = '0';
+      
+      // Анимация раскрытия
+      setTimeout(() => {
+        nameContent.innerHTML = nameText.charAt(0).toUpperCase();
+        nameContent.style.opacity = '1';
+        
+        // Показываем результаты
+        setTimeout(() => {
+          document.getElementById('name-description').style.display = 'block';
+        }, 500);
+      }, 100);
+    }
+    
+    // Функции для сонника
+    function interpretDream() {
+      const dreamInput = document.getElementById('dream-input');
+      const dreamText = dreamInput.value.trim().toLowerCase();
+      const interpretation = document.getElementById('dream-interpretation');
+      
+      if (!dreamText) {
+        alert('Пожалуйста, опишите ваш сон');
+        return;
+      }
+      
+      // Сбрасываем анимацию
+      interpretation.style.opacity = '0';
+      
+      // Анимация интерпретации
+      setTimeout(() => {
+        interpretation.innerHTML = '🌙';
+        interpretation.style.opacity = '1';
+        
+        // Определение ключевых слов в сне
+        let result = '';
+        let symbolism = '';
+        let prediction = '';
+        let advice = '';
+        
+        // Обработка ключевых слов
+        const keywords = {
+          девушка: {
+            result: `Ты видел(а) ${dreamText} в своем сне, которая шла по цветущему саду.`,
+            symbolism: `${dreamText.charAt(0).toUpperCase() + dreamText.slice(1)} в твоем сне символизирует твою внутреннюю женственность и интуицию. Цветущий сад говорит о периоде расцвета и гармонии в твоей жизни.`,
+            prediction: `В ближайшее время ты столкнешься с ситуацией, которая потребует от тебя проявления интуиции и женской мудрости. Это может быть связано с отношениями или творческим проектом.`,
+            advice: `Доверяй своей интуиции, особенно когда речь идет о важных решениях. Иногда разум может подвести, но внутренний голос всегда знает правильный путь.`
+          },
+          крыса: {
+            result: `Ты видел(а) ${dreamText} в своем сне, которая бежала по лабиринту.`,
+            symbolism: `${dreamText.charAt(0).toUpperCase() + dreamText.slice(1)} в твоем сне символизирует скрытые страхи и тревоги, которые ты пытаешься избежать. Лабиринт указывает на сложную ситуацию в реальной жизни.`,
+            prediction: `В ближайшее время ты столкнешься с выбором, который потребует от тебя смелости. Этот выбор связан с твоими внутренними убеждениями и ценностями.`,
+            advice: `Когда сталкиваешься с трудным выбором, задай себе вопрос: "Что бы я сделал(а), если бы не боялся(ась)?" Этот вопрос поможет тебе увидеть скрытые страхи.`
+          },
+          вода: {
+            result: `Ты видел(а) ${dreamText} в своем сне, которая отражала лунный свет.`,
+            symbolism: `${dreamText.charAt(0).toUpperCase() + dreamText.slice(1)} в твоем сне символизирует твои эмоции и подсознание. Спокойная вода говорит о внутренней гармонии и уравновешенности.`,
+            prediction: `В ближайшее время ты получишь важное прозрение, которое поможет тебе принять правильное решение. Это прозрение придет к тебе неожиданно.`,
+            advice: `Уделяй больше времени тишине и спокойствию. Иногда ответы приходят, когда мы перестаем их искать. Попробуй практиковать медитацию.`
+          },
+          лес: {
+            result: `Ты видел(а) ${dreamText} в своем сне, через который пробивался солнечный свет.`,
+            symbolism: `${dreamText.charAt(0).toUpperCase() + dreamText.slice(1)} символизирует период неопределенности и поиска в твоей жизни. Густота леса говорит о сложности текущей ситуации.`,
+            prediction: `В ближайшие недели ты найдешь решение, которое давно искал(а). Это может быть связано с работой, отношениями или личным развитием.`,
+            advice: `Когда чувствуешь себя потерянным(ной), сделай глубокий вдох и остановись на мгновение. Прислушайся к своей интуиции — она покажет тебе верный путь.`
+          }
+        };
+        
+        // Поиск ключевых слов
+        let foundKeyword = null;
+        for (const keyword in keywords) {
+          if (dreamText.includes(keyword)) {
+            foundKeyword = keyword;
+            break;
+          }
+        }
+        
+        // Если найдено ключевое слово
+        if (foundKeyword) {
+          const keywordData = keywords[foundKeyword];
+          result = keywordData.result;
+          symbolism = keywordData.symbolism;
+          prediction = keywordData.prediction;
+          advice = keywordData.advice;
+        } 
+        // Если нет ключевых слов, используем общий шаблон с введенным словом
+        else {
+          const words = dreamText.split(' ');
+          const firstWord = words[0];
+          
+          result = `Ты видел(а) ${dreamText} в своем сне, которая оставила яркое впечатление.`;
+          symbolism = `${firstWord.charAt(0).toUpperCase() + firstWord.slice(1)} в твоем сне символизирует важный аспект твоей жизни. Это может быть связано с твоими текущими переживаниями или скрытыми желаниями.`;
+          prediction = `В ближайшее время ${firstWord} станет важным элементом в твоей жизни. Возможно, тебе предстоит принять решение, связанное с этим.`;
+          advice = `Обрати внимание на детали, связанные с ${firstWord} в твоей реальной жизни. Иногда ответы приходят в неожиданной форме, но они всегда рядом.`;
+        }
+        
+        // Устанавливаем тексты
+        document.getElementById('dream-result').textContent = result;
+        document.getElementById('dream-symbolism').textContent = symbolism;
+        document.getElementById('dream-prediction').textContent = prediction;
+        document.getElementById('dream-advice').textContent = advice;
+        
+        // Показываем результаты
+        setTimeout(() => {
+          document.getElementById('dream-description').style.display = 'block';
+        }, 500);
+      }, 500);
+    }
+    
+    // Функции для фазы луны
+    function updateMoonPhase() {
+      const moonPhase = document.getElementById('moon-phase-element');
+      
+      // Симулируем изменение фазы луны
+      const randomPhase = 25 + Math.random() * 50; // Ограничиваем фазу растущей луной
+      moonPhase.style.clipPath = `circle(50% at ${randomPhase}% 50%)`;
+      
+      // Обновляем информацию
+      const illumination = Math.round((randomPhase - 25) / 75 * 100);
+      
+      document.querySelector('.moon-info .result-text[style*="font-weight: bold"]').textContent = 
+        `12-я лунный день • ${illumination}% освещенности`;
+    }
+    
+    // Функция для инициализации приложения
+    function initApp() {
+      createStars();
+      
+      // Проверяем, есть ли хэш в URL для прямого перехода к гаданию
+      if (window.location.hash) {
+        const divinationId = window.location.hash.substring(1);
+        if (divinations.includes(divinationId)) {
+          showDivination(divinationId);
+        }
+      }
+      
+      // Показываем инструкцию по навигации
+      setTimeout(() => {
+        document.querySelector('.btn-back').style.display = 'none';
+      }, 500);
+      
+      // Инициализируем фазу луны
+      updateMoonPhase();
+      
+      // Устанавливаем фиксированную дату
+      document.getElementById('birth-date').value = '2025-08-14';
+    }
+    
+    // Инициализация при загрузке страницы
+    window.onload = initApp;
+  </script>
+</body>
+</html>
